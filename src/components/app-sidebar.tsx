@@ -41,12 +41,12 @@ const data = {
   navMain: [
     {
       title: "Restaurant Management",
-      url: "restaurant-management",
+      url: "dashboard/restaurant-management",
       icon: IconDashboard,
     },
     {
       title: "Menu Management",
-      url: "menu-management",
+      url: "dashboard/menu-management",
       icon: IconListDetails,
     },
   ],

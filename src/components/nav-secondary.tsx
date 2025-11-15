@@ -1,23 +1,30 @@
 "use client";
 
 import * as React from "react";
-import { IconLogout, type Icon } from "@tabler/icons-react";
+import { IconLogout } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 import {
   SidebarGroup,
   SidebarGroupContent,
-  SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
 } from "~/components/ui/sidebar";
 
-export function NavSecondary({
-  ...props
-}: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+export function NavSecondary(
+  props: React.ComponentPropsWithoutRef<typeof SidebarGroup>
+) {
+  const router = useRouter();
+
+  async function handleLogout() {
+    console.log("Logging out...");
+    await new Promise((res) => setTimeout(res, 2000));
+    router.push("/");
+  }
+
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
-        <SidebarMenuButton>
+        <SidebarMenuButton onClick={handleLogout} className="cursor-pointer">
           <IconLogout />
           Log out
         </SidebarMenuButton>
