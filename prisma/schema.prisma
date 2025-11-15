@@ -70,7 +70,6 @@ model Dish {
     @@index([restaurantId])
 }
 
-// Join table for many-to-many relationship between Dish and Category
 model DishCategory {
     id         String   @id @default(cuid())
     dishId     String

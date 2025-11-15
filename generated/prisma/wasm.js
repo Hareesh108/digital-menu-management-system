@@ -93,11 +93,52 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.PostScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
+  email: 'email',
   name: 'name',
+  country: 'country',
+  emailVerified: 'emailVerified',
+  verificationCode: 'verificationCode',
+  verificationCodeExpires: 'verificationCodeExpires',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RestaurantScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  location: 'location',
+  slug: 'slug',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  restaurantId: 'restaurantId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DishScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  image: 'image',
+  spiceLevel: 'spiceLevel',
+  restaurantId: 'restaurantId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DishCategoryScalarFieldEnum = {
+  id: 'id',
+  dishId: 'dishId',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -110,9 +151,18 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-  Post: 'Post'
+  User: 'User',
+  Restaurant: 'Restaurant',
+  Category: 'Category',
+  Dish: 'Dish',
+  DishCategory: 'DishCategory'
 };
 /**
  * Create the Client
@@ -153,7 +203,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -162,13 +211,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Post {\n  id        Int      @id @default(autoincrement())\n  name      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([name])\n}\n",
-  "inlineSchemaHash": "4dfee2d805d63053d5ae63a6ff65a5c68e353713bdd4147909d9158ea83d8e0f",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id                      String       @id @default(cuid())\n  email                   String       @unique\n  name                    String\n  country                 String\n  emailVerified           Boolean      @default(false)\n  verificationCode        String?\n  verificationCodeExpires DateTime?\n  createdAt               DateTime     @default(now())\n  updatedAt               DateTime     @updatedAt\n  restaurants             Restaurant[]\n\n  @@index([email])\n}\n\nmodel Restaurant {\n  id         String     @id @default(cuid())\n  name       String\n  location   String\n  slug       String     @unique // For QR code and shared links (e.g., /menu/{slug})\n  ownerId    String\n  owner      User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)\n  categories Category[]\n  dishes     Dish[]\n  createdAt  DateTime   @default(now())\n  updatedAt  DateTime   @updatedAt\n\n  @@index([ownerId])\n  @@index([slug])\n}\n\nmodel Category {\n  id           String         @id @default(cuid())\n  name         String\n  restaurantId String\n  restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)\n  dishes       DishCategory[]\n  createdAt    DateTime       @default(now())\n  updatedAt    DateTime       @updatedAt\n\n  @@unique([restaurantId, name]) // Unique category name per restaurant\n  @@index([restaurantId])\n}\n\nmodel Dish {\n  id           String         @id @default(cuid())\n  name         String\n  description  String\n  image        String? // URL or path to image\n  spiceLevel   Int? // Optional spice level (e.g., 1-5)\n  restaurantId String\n  restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)\n  categories   DishCategory[]\n  createdAt    DateTime       @default(now())\n  updatedAt    DateTime       @updatedAt\n\n  @@index([restaurantId])\n}\n\nmodel DishCategory {\n  id         String   @id @default(cuid())\n  dishId     String\n  categoryId String\n  dish       Dish     @relation(fields: [dishId], references: [id], onDelete: Cascade)\n  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)\n  createdAt  DateTime @default(now())\n\n  @@unique([dishId, categoryId]) // A dish can't be in the same category twice\n  @@index([dishId])\n  @@index([categoryId])\n}\n",
+  "inlineSchemaHash": "ef952dc8af9ea7abfeb408cf5b689b037f1448143202d82f9f40b142544d4325",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Post\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"country\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"verificationCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"verificationCodeExpires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"restaurants\",\"kind\":\"object\",\"type\":\"Restaurant\",\"relationName\":\"RestaurantToUser\"}],\"dbName\":null},\"Restaurant\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"location\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ownerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"owner\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"RestaurantToUser\"},{\"name\":\"categories\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToRestaurant\"},{\"name\":\"dishes\",\"kind\":\"object\",\"type\":\"Dish\",\"relationName\":\"DishToRestaurant\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"restaurantId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"restaurant\",\"kind\":\"object\",\"type\":\"Restaurant\",\"relationName\":\"CategoryToRestaurant\"},{\"name\":\"dishes\",\"kind\":\"object\",\"type\":\"DishCategory\",\"relationName\":\"CategoryToDishCategory\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Dish\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"spiceLevel\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"restaurantId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"restaurant\",\"kind\":\"object\",\"type\":\"Restaurant\",\"relationName\":\"DishToRestaurant\"},{\"name\":\"categories\",\"kind\":\"object\",\"type\":\"DishCategory\",\"relationName\":\"DishToDishCategory\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"DishCategory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"dishId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"dish\",\"kind\":\"object\",\"type\":\"Dish\",\"relationName\":\"DishToDishCategory\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToDishCategory\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

@@ -121,11 +121,52 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.PostScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
+  email: 'email',
   name: 'name',
+  country: 'country',
+  emailVerified: 'emailVerified',
+  verificationCode: 'verificationCode',
+  verificationCodeExpires: 'verificationCodeExpires',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RestaurantScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  location: 'location',
+  slug: 'slug',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  restaurantId: 'restaurantId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DishScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  image: 'image',
+  spiceLevel: 'spiceLevel',
+  restaurantId: 'restaurantId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DishCategoryScalarFieldEnum = {
+  id: 'id',
+  dishId: 'dishId',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -138,9 +179,18 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-  Post: 'Post'
+  User: 'User',
+  Restaurant: 'Restaurant',
+  Category: 'Category',
+  Dish: 'Dish',
+  DishCategory: 'DishCategory'
 };
 
 /**
