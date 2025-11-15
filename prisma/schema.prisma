@@ -11,11 +11,75 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model User {
+    id                      String       @id @default(cuid())
+    email                   String       @unique
+    name                    String
+    country                 String
+    emailVerified           Boolean      @default(false)
+    verificationCode        String?
+    verificationCodeExpires DateTime?
+    createdAt               DateTime     @default(now())
+    updatedAt               DateTime     @updatedAt
+    restaurants             Restaurant[]
 
-    @@index([name])
+    @@index([email])
+}
+
+model Restaurant {
+    id         String     @id @default(cuid())
+    name       String
+    location   String
+    slug       String     @unique // For QR code and shared links (e.g., /menu/{slug})
+    ownerId    String
+    owner      User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    categories Category[]
+    dishes     Dish[]
+    createdAt  DateTime   @default(now())
+    updatedAt  DateTime   @updatedAt
+
+    @@index([ownerId])
+    @@index([slug])
+}
+
+model Category {
+    id           String         @id @default(cuid())
+    name         String
+    restaurantId String
+    restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+    dishes       DishCategory[]
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+
+    @@unique([restaurantId, name]) // Unique category name per restaurant
+    @@index([restaurantId])
+}
+
+model Dish {
+    id           String         @id @default(cuid())
+    name         String
+    description  String
+    image        String?        // URL or path to image
+    spiceLevel   Int?           // Optional spice level (e.g., 1-5)
+    restaurantId String
+    restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+    categories   DishCategory[]
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+
+    @@index([restaurantId])
+}
+
+// Join table for many-to-many relationship between Dish and Category
+model DishCategory {
+    id         String   @id @default(cuid())
+    dishId     String
+    categoryId String
+    dish       Dish     @relation(fields: [dishId], references: [id], onDelete: Cascade)
+    category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+    createdAt  DateTime @default(now())
+
+    @@unique([dishId, categoryId]) // A dish can't be in the same category twice
+    @@index([dishId])
+    @@index([categoryId])
 }
