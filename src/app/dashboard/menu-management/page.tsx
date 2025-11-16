@@ -56,7 +56,6 @@ export default function MenuManagementPage() {
   const { data: restaurants, isLoading: restaurantsLoading } =
     api.restaurant.getAll.useQuery();
 
-  // Auto-select first restaurant if available
   useEffect(() => {
     if (
       restaurants &&
@@ -109,7 +108,7 @@ export default function MenuManagementPage() {
   };
 
   const handleEditCategory = (category: Category) => {
-    setSelectedCategory(category as any);
+    setSelectedCategory(category);
     setCategoryDialogOpen(true);
   };
 
@@ -143,7 +142,7 @@ export default function MenuManagementPage() {
     }
   };
 
-  if (!selectedRestaurantId && restaurants && restaurants.length === 0) {
+  if (!selectedRestaurantId && restaurants?.length === 0) {
     return (
       <>
         <SiteHeader title="Menu Management" />

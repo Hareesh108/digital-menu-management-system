@@ -18,10 +18,17 @@ import {
 } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { Checkbox } from "~/components/ui/checkbox";
 import { api } from "~/trpc/react";
 import type { RouterOutputs } from "~/trpc/react";
+import { FOOD_ITEMS } from "~/utils";
 
 type Dish = RouterOutputs["dish"]["getById"];
 
@@ -74,7 +81,8 @@ export function DishFormDialog({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
-  const [spiceLevel, setSpiceLevel] = useState<string>("");
+  // Use "0" to represent "None" (must be non-empty)
+  const [spiceLevel, setSpiceLevel] = useState<string>("0");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [errors, setErrors] = useState<{
     name?: string;
@@ -86,7 +94,7 @@ export function DishFormDialog({
       setName(dish.name);
       setDescription(dish.description);
       setImage(dish.image ?? "");
-      setSpiceLevel(dish.spiceLevel?.toString() ?? "");
+      setSpiceLevel(dish.spiceLevel?.toString() ?? "0"); // default to "0"
       setSelectedCategories(dish.categories.map((c) => c.id));
     } else {
       reset();
@@ -98,7 +106,7 @@ export function DishFormDialog({
     setName("");
     setDescription("");
     setImage("");
-    setSpiceLevel("");
+    setSpiceLevel("0");
     setSelectedCategories([]);
     setErrors({});
   };
@@ -127,11 +135,14 @@ export function DishFormDialog({
     e.preventDefault();
     if (!validate()) return;
 
+    const spice =
+      spiceLevel !== "0" && spiceLevel !== "" ? parseInt(spiceLevel, 10) : null;
+
     const dishData = {
       name: name.trim(),
       description: description.trim(),
       image: image.trim() || null,
-      spiceLevel: spiceLevel ? parseInt(spiceLevel) : null,
+      spiceLevel: spice,
       categoryIds: selectedCategories,
     };
 
@@ -150,7 +161,7 @@ export function DishFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit Dish" : "Create Dish"}</DialogTitle>
           <DialogDescription>
@@ -184,7 +195,7 @@ export function DishFormDialog({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your dish..."
                 rows={3}
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={createMutation.isPending || updateMutation.isPending}
               />
               {errors.description && (
@@ -194,17 +205,28 @@ export function DishFormDialog({
               )}
             </Field>
             <Field>
-              <FieldLabel htmlFor="image">Image URL</FieldLabel>
-              <Input
-                id="image"
-                type="url"
+              <FieldLabel htmlFor="image">Image</FieldLabel>
+
+              <Select
+                onValueChange={(value) => setImage(value)}
                 value={image}
-                onChange={(e) => setImage(e.target.value)}
-                placeholder="https://example.com/image.jpg"
                 disabled={createMutation.isPending || updateMutation.isPending}
-              />
+              >
+                <SelectTrigger id="image">
+                  <SelectValue placeholder="Select an image" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  {FOOD_ITEMS.map((item) => (
+                    <SelectItem key={item.url} value={item.url}>
+                      {item.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               <FieldDescription>
-                Optional: URL to an image of your dish
+                Optional: Choose an image for your dish
               </FieldDescription>
             </Field>
             <Field>
@@ -218,20 +240,23 @@ export function DishFormDialog({
                   <SelectValue placeholder="Select spice level (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  {/* Use "0" instead of empty string */}
+                  <SelectItem value="0">None</SelectItem>
                   <SelectItem value="1">🌶️ Mild (1)</SelectItem>
                   <SelectItem value="2">🌶️🌶️ Medium (2)</SelectItem>
                   <SelectItem value="3">🌶️🌶️🌶️ Hot (3)</SelectItem>
                   <SelectItem value="4">🌶️🌶️🌶️🌶️ Very Hot (4)</SelectItem>
-                  <SelectItem value="5">🌶️🌶️🌶️🌶️🌶️ Extremely Hot (5)</SelectItem>
+                  <SelectItem value="5">
+                    🌶️🌶️🌶️🌶️🌶️ Extremely Hot (5)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </Field>
             <Field>
               <FieldLabel>Categories</FieldLabel>
-              <div className="space-y-2 border rounded-md p-4 max-h-48 overflow-y-auto">
+              <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border p-4">
                 {!categories || categories.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     No categories available. Create a category first.
                   </p>
                 ) : (
@@ -250,7 +275,7 @@ export function DishFormDialog({
                       />
                       <label
                         htmlFor={`category-${category.id}`}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
+                        className="flex-1 cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
                         {category.name}
                       </label>
@@ -290,4 +315,3 @@ export function DishFormDialog({
     </Dialog>
   );
 }
-

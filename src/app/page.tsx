@@ -1,53 +1,157 @@
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { QrCode, User, List, MapPin, ImageIcon, Sparkles } from "lucide-react";
 
-import { LatestPost } from "~/app/_components/post";
-import { api, HydrateClient } from "~/trpc/server";
+import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "~/components/ui/card";
+import { Badge } from "~/components/ui/badge";
+import { FOOD_ITEMS } from "~/utils";
+import { FeatureCard, PreviewCard } from "~/components/landing-page";
 
-export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
+export default function LandingPage() {
+  const router = useRouter();
 
-  void api.post.getLatest.prefetch();
+  function handleSignIn() {
+    router.push("/login");
+  }
 
   return (
-    <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
-            </p>
+    <div className="min-h-screen bg-white text-slate-900">
+      <header className="border-b">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="rounded-md bg-linear-to-tr from-purple-600 to-pink-500 p-2 shadow-sm">
+              <Sparkles className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg leading-none font-extrabold">
+                DigitalMenu
+              </h1>
+              <p className="text-xs text-slate-500">
+                QR menus & admin for restaurants
+              </p>
+            </div>
           </div>
 
-          <LatestPost />
+          <div className="flex items-center gap-3">
+            <Button onClick={handleSignIn} className="ml-2">
+              Sign in
+            </Button>
+          </div>
         </div>
+      </header>
+
+      <main className="mx-auto max-w-7xl px-6 py-12">
+        <section className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
+          <div>
+            <Badge className="mb-4">Built for restaurants</Badge>
+            <h2 className="text-4xl leading-tight font-extrabold sm:text-5xl">
+              Digital menus that load instantly —{" "}
+              <span className="text-indigo-600">QR & shareable links</span>
+            </h2>
+            <p className="mt-4 max-w-xl text-lg text-slate-600">
+              Manage restaurants, categories and dishes with spice level, images
+              and organized categories. Customers open menus via QR or a link —
+              no app required.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Button size="lg" onClick={handleSignIn}>
+                Sign in
+              </Button>
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="flex flex-col items-start gap-1">
+                <QrCode className="h-6 w-6 text-indigo-600" />
+                <span className="text-sm text-slate-600">QR-ready</span>
+              </div>
+              <div className="flex flex-col items-start gap-1">
+                <List className="h-6 w-6 text-indigo-600" />
+                <span className="text-sm text-slate-600">Categories</span>
+              </div>
+              <div className="flex flex-col items-start gap-1">
+                <ImageIcon className="h-6 w-6 text-indigo-600" />
+                <span className="text-sm text-slate-600">Dish images</span>
+              </div>
+              <div className="flex flex-col items-start gap-1">
+                <User className="h-6 w-6 text-indigo-600" />
+                <span className="text-sm text-slate-600">Owner admin</span>
+              </div>
+            </div>
+          </div>
+
+          <PreviewCard />
+        </section>
+
+        <section className="mt-16">
+          <h3 className="text-2xl font-bold">Features</h3>
+          <p className="mt-2 max-w-2xl text-slate-600">
+            Everything owners need to manage menus — and customers need to view
+            them.
+          </p>
+
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <FeatureCard
+              title="Email sign-in"
+              description="Register & sign in using a verification code sent to your email."
+              icon={<User className="h-6 w-6 text-indigo-600" />}
+            />
+            <FeatureCard
+              title="Multiple restaurants"
+              description="Create and manage many restaurants from one account."
+              icon={<MapPin className="h-6 w-6 text-indigo-600" />}
+            />
+            <FeatureCard
+              title="Categories & dishes"
+              description="Organize dishes into categories. A dish can belong to multiple categories."
+              icon={<List className="h-6 w-6 text-indigo-600" />}
+            />
+            <FeatureCard
+              title="Dish media"
+              description="Add images and spice level to each dish for a better customer experience."
+              icon={<ImageIcon className="h-6 w-6 text-indigo-600" />}
+            />
+            <FeatureCard
+              title="QR & share links"
+              description="Generate QR codes and shareable links so customers can open menus instantly."
+              icon={<QrCode className="h-6 w-6 text-indigo-600" />}
+            />
+            <FeatureCard
+              title="Fast & responsive"
+              description="Designed for quick load times and mobile-first use."
+              icon={<Sparkles className="h-6 w-6 text-indigo-600" />}
+            />
+          </div>
+        </section>
+
+        <footer className="mt-16 border-t py-8">
+          <div className="mx-auto max-w-7xl px-6 text-sm text-slate-500">
+            <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+              <p>© {new Date().getFullYear()} DigitalMenu — built with ❤️</p>
+              <div className="flex gap-4">
+                <Link href="#" className="hover:underline">
+                  Privacy
+                </Link>
+                <Link href="#" className="hover:underline">
+                  Terms
+                </Link>
+              </div>
+            </div>
+          </div>
+        </footer>
       </main>
-    </HydrateClient>
+    </div>
   );
 }
+
+
