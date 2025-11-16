@@ -9,6 +9,7 @@ import type { RouterOutputs } from "~/trpc/react";
 import { api } from "~/trpc/react";
 
 import { DeleteConfirmationDialog } from "~/components/delete-confirmation-dialog";
+import { CurrentUserEmail } from "~/components/current-user-email";
 import { QRCodeDialog } from "~/components/restaurant/qr-code-dialog";
 import { RestaurantFormDialog } from "~/components/restaurant/restaurant-form-dialog";
 import { SiteHeader } from "~/components/site-header";
@@ -87,6 +88,7 @@ export default function RestaurantManagementPage() {
 
   return (
     <>
+      <CurrentUserEmail />
       <SiteHeader title="Restaurant Management" />
       <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
         <div className="flex items-center justify-between">

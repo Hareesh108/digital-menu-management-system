@@ -6,7 +6,7 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -115,19 +115,18 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  *
  * NOTE: Authentication is currently commented out for development. Uncomment later.
  */
-export const protectedProcedure = t.procedure.use(timingMiddleware);
-// .use(async ({ ctx, next }) => {
-//   if (!ctx.session) {
-//     throw new TRPCError({
-//       code: "UNAUTHORIZED",
-//       message: "You must be logged in to access this resource",
-//     });
-//   }
+export const protectedProcedure = t.procedure.use(timingMiddleware).use(async ({ ctx, next }) => {
+  if (!ctx.session) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You must be logged in to access this resource",
+    });
+  }
 
-//   return next({
-//     ctx: {
-//       ...ctx,
-//       session: ctx.session as SessionPayload, // Type assertion since we checked it exists
-//     },
-//   });
-// });
+  return next({
+    ctx: {
+      ...ctx,
+      session: ctx.session, // now guaranteed by the middleware
+    },
+  });
+});
