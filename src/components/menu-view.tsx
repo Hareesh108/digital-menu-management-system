@@ -18,7 +18,7 @@ interface MenuViewProps {
 export function MenuView({ restaurant }: MenuViewProps) {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(restaurant.categories[0]?.id ?? null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const categoryRefs = useRef<Record<string, HTMLElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [visibleCategory, setVisibleCategory] = useState<string | null>(restaurant.categories[0]?.id ?? null);
 
