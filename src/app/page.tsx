@@ -20,11 +20,11 @@ export default function LandingPage() {
       <header className="border-b">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="bg-linear-to-tr rounded-md from-purple-600 to-pink-500 p-2 shadow-sm">
+            <div className="rounded-md bg-linear-to-tr from-purple-600 to-pink-500 p-2 shadow-sm">
               <Sparkles className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-extrabold leading-none">DigitalMenu</h1>
+              <h1 className="text-lg leading-none font-extrabold">DigitalMenu</h1>
               <p className="text-xs text-slate-500">QR menus & admin for restaurants</p>
             </div>
           </div>
@@ -41,7 +41,7 @@ export default function LandingPage() {
         <section className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
           <div>
             <Badge className="mb-4">Built for restaurants</Badge>
-            <h2 className="text-4xl font-extrabold leading-tight sm:text-5xl">
+            <h2 className="text-4xl leading-tight font-extrabold sm:text-5xl">
               Digital menus that load instantly — <span className="text-indigo-600">QR & shareable links</span>
             </h2>
             <p className="mt-4 max-w-xl text-lg text-slate-600">

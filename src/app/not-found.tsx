@@ -15,7 +15,7 @@ export default function NotFound() {
       <div className="flex w-full max-w-lg flex-col items-center text-center">
         <Card className="w-full bg-white shadow-sm">
           <CardContent className="p-8">
-            <h1 className="mb-3 text-3xl font-extrabold leading-tight">Page not found</h1>
+            <h1 className="mb-3 text-3xl leading-tight font-extrabold">Page not found</h1>
 
             <p className="mb-8 text-slate-600">
               Oops — the page you are looking for doesn’t exist or may have been moved. You can go back, return home, or

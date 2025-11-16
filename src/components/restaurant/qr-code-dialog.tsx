@@ -72,7 +72,7 @@ export function QRCodeDialog({ open, onOpenChange, url, restaurantName }: QRCode
               </div>
 
               <div className="flex w-full flex-col gap-2">
-                <div className="bg-muted flex items-center gap-2 rounded-md p-2">
+                <div className="flex items-center gap-2 rounded-md bg-muted p-2">
                   <span className="flex-1 truncate text-sm">{url}</span>
                   <Button variant="ghost" size="icon" onClick={handleCopyLink} className="shrink-0">
                     <Copy className="h-4 w-4" />
@@ -86,7 +86,7 @@ export function QRCodeDialog({ open, onOpenChange, url, restaurantName }: QRCode
             </div>
           ) : (
             <div className="flex h-64 items-center justify-center">
-              <QrCode className="text-muted-foreground h-12 w-12 animate-spin" />
+              <QrCode className="h-12 w-12 animate-spin text-muted-foreground" />
             </div>
           )}
         </div>

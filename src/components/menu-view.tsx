@@ -19,15 +19,17 @@ export function MenuView({ restaurant }: MenuViewProps) {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(restaurant.categories[0]?.id ?? null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [visibleCategory, setVisibleCategory] = useState<string | null>(restaurant.categories[0]?.id ?? null);
 
-  // Observe which category is in view
   useEffect(() => {
-    const observerOptions = {
-      root: containerRef.current,
-      rootMargin: "-100px 0px -50% 0px",
-      threshold: 0,
+    const rootEl = scrollContainerRef.current;
+    if (!rootEl) return;
+
+    const observerOptions: IntersectionObserverInit = {
+      root: rootEl,
+      rootMargin: "-30% 0px -50% 0px",
+      threshold: 0.1,
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -42,170 +44,177 @@ export function MenuView({ restaurant }: MenuViewProps) {
       });
     }, observerOptions);
 
-    Object.values(categoryRefs.current).forEach((ref) => {
-      if (ref) observer.observe(ref);
+    Object.values(categoryRefs.current).forEach((el) => {
+      if (el) observer.observe(el);
     });
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [restaurant.categories]);
 
   const handleCategoryClick = (categoryId: string) => {
     const categoryElement = categoryRefs.current[categoryId];
-    if (categoryElement) {
-      categoryElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (categoryElement && scrollContainerRef.current) {
+      const topPos =
+        categoryElement.getBoundingClientRect().top - scrollContainerRef.current.getBoundingClientRect().top;
+      scrollContainerRef.current.scrollTo({ top: topPos, behavior: "smooth" });
       setSelectedCategoryId(categoryId);
       setIsMenuOpen(false);
     }
   };
 
-  const currentCategory = restaurant.categories.find((cat) => cat.id === visibleCategory) || restaurant.categories[0];
+  const currentCategory = restaurant.categories.find((cat) => cat.id === visibleCategory) ?? restaurant.categories[0];
 
   return (
-    <div className="bg-background min-h-screen">
-      {/* Sticky Header with Category Name */}
-      <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 border-b backdrop-blur">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+    <div className="flex min-h-screen items-start justify-center bg-background px-2 py-4 sm:px-4">
+      <div
+        className="
+      flex 
+      w-full 
+      flex-col 
+      overflow-hidden 
+      rounded-none 
+      bg-white 
+      sm:max-w-[420px] sm:rounded-md 
+      sm:shadow-md 
+      sm:ring-1 sm:ring-slate-200
+    "
+        style={{ minHeight: "85vh", maxHeight: "92vh" }}
+      >
+        <header className="sticky top-0 z-30 border-b bg-white">
+          <div className="flex items-center justify-between px-4 py-3">
             <div>
-              <h1 className="text-2xl font-bold">{restaurant.name}</h1>
-              {currentCategory && <p className="text-muted-foreground text-sm">{currentCategory.name}</p>}
+              <h1 className="text-lg leading-tight font-semibold">{restaurant.name}</h1>
+              {currentCategory && <p className="text-sm text-slate-500">{currentCategory.name}</p>}
             </div>
-            {/* Floating Menu Button */}
+
+            <div className="ml-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsMenuOpen((s) => !s)}
+                aria-label="Toggle categories"
+                className="h-9 w-9"
+              >
+                {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <div
+          ref={scrollContainerRef}
+          className="overflow-y-auto"
+          style={{ flex: "1 1 auto", WebkitOverflowScrolling: "touch", padding: 8 }}
+        >
+          <div className="divide-y">
+            {restaurant.categories.map((category) => (
+              <section
+                key={category.id}
+                data-category-id={category.id}
+                ref={(el) => {
+                  categoryRefs.current[category.id] = el;
+                }}
+                className="scroll-mt-6 px-3 py-5"
+              >
+                <div className="mb-3">
+                  <h2 className="text-center text-base font-semibold text-slate-700">{category.name}</h2>
+                </div>
+
+                <div className="space-y-4">
+                  {category.dishes.map((dish) => (
+                    <article key={dish.id} className="flex items-start gap-3 rounded-md border bg-white p-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-2 flex items-center gap-2">
+                          <span
+                            className={`h-3 w-3 rounded-full border ${
+                              dish ? "border-emerald-500 bg-emerald-500" : "border-rose-500 bg-rose-500"
+                            }`}
+                            aria-hidden
+                          />
+                          {dish.spiceLevel && dish.spiceLevel > 0 && (
+                            <span className="text-xs text-rose-500">{"🌶️".repeat(Math.min(3, dish.spiceLevel))}</span>
+                          )}
+                        </div>
+
+                        <h3 className="truncate text-sm font-semibold text-slate-800">{dish.name}</h3>
+
+                        {/* <div className="mt-1 text-sm font-medium text-slate-700">
+                          {dish.price != null ? `₹ ${dish.price}` : "—"}
+                        </div> */}
+
+                        <p className="mt-2 line-clamp-3 text-sm text-slate-600">
+                          {dish.description ?? ""}
+                          <span className="ml-1 text-indigo-600">read more</span>
+                        </p>
+                      </div>
+
+                      <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-slate-100">
+                        {dish.image ? (
+                          <Image src={dish.image} alt={dish.name} width={80} height={80} className="object-cover" />
+                        ) : null}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative">
+          <div className="sm:hidden">
+            <div className="fixed bottom-4 left-1/2 z-40 -translate-x-1/2">
+              <Button
+                className="rounded-full bg-rose-500 px-6 py-2 text-white shadow-md"
+                onClick={() => setIsMenuOpen((s) => !s)}
+                aria-label="Menu"
+              >
+                ≡ Menu
+              </Button>
+            </div>
+          </div>
+
+          <div className="hidden justify-center border-t bg-white p-3 sm:flex">
             <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden"
-              aria-label="Toggle menu"
+              className="rounded-full bg-rose-500 px-6 py-2 text-white shadow-md"
+              onClick={() => setIsMenuOpen((s) => !s)}
+              aria-label="Menu"
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              ≡ Menu
             </Button>
           </div>
         </div>
-      </header>
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          {/* Desktop Category Sidebar */}
-          <aside className="hidden w-64 flex-shrink-0 lg:block">
-            <div className="sticky top-24">
-              <h2 className="mb-4 text-lg font-semibold">Categories</h2>
-              <nav className="space-y-2">
-                {restaurant.categories.map((category) => (
-                  <Button
-                    key={category.id}
-                    variant={selectedCategoryId === category.id ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => handleCategoryClick(category.id)}
-                  >
-                    {category.name}
-                    <Badge variant="secondary" className="ml-auto">
-                      {category.dishes.length}
-                    </Badge>
-                  </Button>
-                ))}
-              </nav>
-            </div>
-          </aside>
-
-          {/* Mobile Category Menu Overlay */}
-          {isMenuOpen && (
-            <div className="fixed inset-0 z-50 lg:hidden">
-              <div className="absolute inset-0 bg-black/50" onClick={() => setIsMenuOpen(false)} />
-              <div className="bg-background absolute right-0 top-0 h-full w-64 shadow-lg">
-                <div className="border-b p-4">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">Categories</h2>
-                    <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}>
-                      <X className="h-5 w-5" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="h-[calc(100vh-80px)] overflow-y-auto">
-                  <nav className="space-y-2 p-4">
-                    {restaurant.categories.map((category) => (
-                      <Button
-                        key={category.id}
-                        variant={selectedCategoryId === category.id ? "default" : "ghost"}
-                        className="w-full justify-start"
-                        onClick={() => handleCategoryClick(category.id)}
-                      >
-                        {category.name}
-                        <Badge variant="secondary" className="ml-auto">
-                          {category.dishes.length}
-                        </Badge>
-                      </Button>
-                    ))}
-                  </nav>
-                </div>
+        {isMenuOpen && (
+          <div className="fixed inset-0 z-50 flex items-start justify-center">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setIsMenuOpen(false)} />
+            <div className="relative z-50 mt-14 w-[92%] max-w-xs rounded-md border bg-white shadow-lg">
+              <div className="border-b p-3">
+                <h3 className="text-center text-sm font-semibold">Categories</h3>
               </div>
-            </div>
-          )}
-
-          {/* Main Content */}
-          <main className="flex-1" ref={containerRef}>
-            {restaurant.categories.length === 0 ? (
-              <div className="py-12 text-center">
-                <p className="text-muted-foreground">No menu items available yet.</p>
-              </div>
-            ) : (
-              <div className="space-y-12">
-                {restaurant.categories.map((category) => (
-                  <div
-                    key={category.id}
-                    data-category-id={category.id}
-                    ref={(el) => {
-                      categoryRefs.current[category.id] = el;
-                    }}
-                    className="scroll-mt-24"
+              <div className="max-h-[60vh] overflow-y-auto p-2">
+                {restaurant.categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => handleCategoryClick(cat.id)}
+                    className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left hover:bg-slate-50 ${
+                      selectedCategoryId === cat.id ? "bg-slate-100 font-medium" : ""
+                    }`}
                   >
-                    <h2 className="mb-6 text-3xl font-bold">{category.name}</h2>
-                    {category.dishes.length === 0 ? (
-                      <p className="text-muted-foreground">No items in this category yet.</p>
-                    ) : (
-                      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        {category.dishes.map((dish) => (
-                          <div
-                            key={dish.id}
-                            className="bg-card rounded-lg border p-4 transition-shadow hover:shadow-md"
-                          >
-                            {dish.image && (
-                              <div className="relative mb-4 aspect-video w-full overflow-hidden rounded-md">
-                                <Image src={dish.image} alt={dish.name} fill className="object-cover" />
-                              </div>
-                            )}
-                            <div className="mb-2 flex items-start justify-between">
-                              <h3 className="text-xl font-semibold">{dish.name}</h3>
-                              {dish.spiceLevel && dish.spiceLevel > 0 && (
-                                <Badge variant="outline">{"🌶️".repeat(dish.spiceLevel)}</Badge>
-                              )}
-                            </div>
-                            <p className="text-muted-foreground text-sm">{dish.description}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                    <span>{cat.name}</span>
+                    <Badge variant="secondary">{cat.dishes.length}</Badge>
+                  </button>
                 ))}
               </div>
-            )}
-          </main>
-        </div>
+              <div className="flex justify-end border-t p-2">
+                <Button variant="ghost" onClick={() => setIsMenuOpen(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Floating Menu Button (Mobile) - Only visible when menu is closed */}
-      {!isMenuOpen && (
-        <Button
-          className="fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full shadow-lg lg:hidden"
-          size="icon"
-          onClick={() => setIsMenuOpen(true)}
-          aria-label="Open menu"
-        >
-          <Menu className="h-6 w-6" />
-        </Button>
-      )}
     </div>
   );
 }

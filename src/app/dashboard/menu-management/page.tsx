@@ -121,9 +121,9 @@ export default function MenuManagementPage() {
       <>
         <SiteHeader title="Menu Management" />
         <div className="flex flex-1 flex-col items-center justify-center p-12">
-          <Utensils className="text-muted-foreground mb-4 h-12 w-12" />
+          <Utensils className="mb-4 h-12 w-12 text-muted-foreground" />
           <p className="mb-2 text-lg font-semibold">No Restaurants Found</p>
-          <p className="text-muted-foreground mb-4 text-center">
+          <p className="mb-4 text-center text-muted-foreground">
             Create a restaurant first to start managing your menu.
           </p>
           <Button onClick={() => (window.location.href = "/dashboard/restaurant-management")}>
@@ -194,7 +194,7 @@ export default function MenuManagementPage() {
                   </div>
                 ) : !categories || categories.length === 0 ? (
                   <div className="flex flex-col items-center justify-center p-12 text-center">
-                    <p className="text-muted-foreground mb-4">No categories yet. Create your first category!</p>
+                    <p className="mb-4 text-muted-foreground">No categories yet. Create your first category!</p>
                     <Button onClick={handleCreateCategory}>
                       <Plus className="mr-2 h-4 w-4" />
                       Create Category
@@ -255,7 +255,7 @@ export default function MenuManagementPage() {
                   </div>
                 ) : !dishes || dishes.length === 0 ? (
                   <div className="flex flex-col items-center justify-center p-12 text-center">
-                    <p className="text-muted-foreground mb-4">No dishes yet. Create your first dish!</p>
+                    <p className="mb-4 text-muted-foreground">No dishes yet. Create your first dish!</p>
                     <Button onClick={handleCreateDish}>
                       <Plus className="mr-2 h-4 w-4" />
                       Create Dish
@@ -281,7 +281,7 @@ export default function MenuManagementPage() {
                             {dish.spiceLevel && dish.spiceLevel > 0 ? (
                               <Badge variant="outline">{"🌶️".repeat(dish.spiceLevel)}</Badge>
                             ) : (
-                              <span className="text-muted-foreground text-sm">-</span>
+                              <span className="text-sm text-muted-foreground">-</span>
                             )}
                           </TableCell>
                           <TableCell>
@@ -293,7 +293,7 @@ export default function MenuManagementPage() {
                                   </Badge>
                                 ))
                               ) : (
-                                <span className="text-muted-foreground text-sm">No categories</span>
+                                <span className="text-sm text-muted-foreground">No categories</span>
                               )}
                               {dish.categories.length > 2 && (
                                 <Badge variant="secondary" className="text-xs">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Edit, Trash2, QrCode, ExternalLink, View, Eye, Copy } from "lucide-react";
+import { Plus, Edit, Trash2, QrCode, Eye, Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -109,7 +109,7 @@ export default function RestaurantManagementPage() {
             </div>
           ) : !restaurants || restaurants.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-12 text-center">
-              <p className="text-muted-foreground mb-4">
+              <p className="mb-4 text-muted-foreground">
                 No restaurants yet. Create your first restaurant to get started!
               </p>
               <Button onClick={handleCreate}>
@@ -141,7 +141,7 @@ export default function RestaurantManagementPage() {
                       <Badge variant="secondary">{restaurant._count?.dishes ?? 0}</Badge>
                     </TableCell>
                     <TableCell>
-                      <code className="bg-muted rounded px-2 py-1 text-xs">{restaurant.slug}</code>
+                      <code className="rounded bg-muted px-2 py-1 text-xs">{restaurant.slug}</code>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
@@ -186,7 +186,7 @@ export default function RestaurantManagementPage() {
                           size="icon"
                           onClick={() => handleDelete(restaurant)}
                           title="Delete"
-                          className="text-destructive hover:text-destructive cursor-pointer"
+                          className="cursor-pointer text-destructive hover:text-destructive"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

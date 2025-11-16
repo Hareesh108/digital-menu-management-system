@@ -37,7 +37,7 @@ export function DeleteConfirmationDialog({
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>
             {description}
-            {itemName && <span className="text-foreground font-semibold"> &quot;{itemName}&quot;</span>}? This action
+            {itemName && <span className="font-semibold text-foreground"> &quot;{itemName}&quot;</span>}? This action
             cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -46,7 +46,7 @@ export function DeleteConfirmationDialog({
           <AlertDialogAction
             onClick={onConfirm}
             disabled={isLoading}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="text-destructive-foreground bg-destructive hover:bg-destructive/90"
           >
             {isLoading ? "Deleting..." : "Delete"}
           </AlertDialogAction>

@@ -170,7 +170,7 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your dish..."
                 rows={3}
-                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={createMutation.isPending || updateMutation.isPending}
               />
               {errors.description && (
@@ -225,7 +225,7 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
               <FieldLabel>Categories</FieldLabel>
               <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border p-4">
                 {!categories || categories.length === 0 ? (
-                  <p className="text-muted-foreground text-sm">No categories available. Create a category first.</p>
+                  <p className="text-sm text-muted-foreground">No categories available. Create a category first.</p>
                 ) : (
                   categories.map((category) => (
                     <div key={category.id} className="flex items-center space-x-2">
@@ -237,7 +237,7 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
                       />
                       <label
                         htmlFor={`category-${category.id}`}
-                        className="flex-1 cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="flex-1 cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
                         {category.name}
                       </label>

@@ -5,7 +5,7 @@
   "tabWidth": 2,
   "printWidth": 120,
   "bracketSpacing": true,
-  "tailwindStylesheet": "src/app/globals.css",
+  "tailwindStylesheet": "src/styles/globals.css",
   "tailwindPreserveWhitespace": true,
   "tailwindFunctions": ["clsx"],
   "plugins": ["prettier-plugin-tailwindcss"]
