@@ -119,13 +119,13 @@ export function PreviewCard({ className = "" }: { className?: string }) {
                           <p className="mt-2 line-clamp-2 text-sm text-slate-600">{dish.description}</p>
                         </div>
 
-                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-slate-100">
+                        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md bg-slate-100">
                           <Image
                             src={dish.image ?? ""}
                             alt={dish.name}
-                            width={80}
-                            height={80}
-                            className="object-cover"
+                            fill
+                            className="object-cover object-center"
+                            sizes="112px"
                           />
                         </div>
                       </div>
