@@ -1,21 +1,230 @@
-import { AppSidebar } from "~/components/app-sidebar";
-import { DataTable } from "~/components/data-table";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Plus, Edit, Trash2, QrCode, ExternalLink } from "lucide-react";
 import { SiteHeader } from "~/components/site-header";
-import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
+import { Button } from "~/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
+import { Badge } from "~/components/ui/badge";
+import { RestaurantFormDialog } from "~/components/restaurant-form-dialog";
+import { DeleteConfirmationDialog } from "~/components/delete-confirmation-dialog";
+import { QRCodeDialog } from "~/components/qr-code-dialog";
+import { api } from "~/trpc/react";
+import { Skeleton } from "~/components/ui/skeleton";
+import type { RouterOutputs } from "~/trpc/react";
 
-import data from "./../data.json";
+type Restaurant = RouterOutputs["restaurant"]["getAll"][number];
 
-export default function Page() {
+export default function RestaurantManagementPage() {
+  const router = useRouter();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [qrDialogOpen, setQrDialogOpen] = useState(false);
+  const [selectedRestaurant, setSelectedRestaurant] =
+    useState<Restaurant | null>(null);
+  const [restaurantToDelete, setRestaurantToDelete] =
+    useState<Restaurant | null>(null);
+
+  const utils = api.useUtils();
+  const { data: restaurants, isLoading } = api.restaurant.getAll.useQuery();
+
+  const deleteMutation = api.restaurant.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Restaurant deleted successfully");
+      void utils.restaurant.getAll.invalidate();
+      setDeleteDialogOpen(false);
+      setRestaurantToDelete(null);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete restaurant");
+    },
+  });
+
+  const handleCreate = () => {
+    setSelectedRestaurant(null);
+    setDialogOpen(true);
+  };
+
+  const handleEdit = (restaurant: Restaurant) => {
+    setSelectedRestaurant(restaurant);
+    setDialogOpen(true);
+  };
+
+  const handleDelete = (restaurant: Restaurant) => {
+    setRestaurantToDelete(restaurant);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleShowQR = (restaurant: Restaurant) => {
+    setSelectedRestaurant(restaurant);
+    setQrDialogOpen(true);
+  };
+
+  const handleViewMenu = (restaurant: Restaurant) => {
+    router.push(`/menu/${restaurant.slug}`);
+  };
+
+  const confirmDelete = () => {
+    if (restaurantToDelete) {
+      deleteMutation.mutate({ id: restaurantToDelete.id });
+    }
+  };
+
+  const getMenuUrl = (slug: string) => {
+    if (typeof window !== "undefined") {
+      return `${window.location.origin}/menu/${slug}`;
+    }
+    return `/menu/${slug}`;
+  };
+
   return (
     <>
       <SiteHeader title="Restaurant Management" />
-      <div className="flex flex-1 flex-col">
-        <div className="@container/main flex flex-1 flex-col gap-2">
-          <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-            <DataTable data={data} />
+      <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Your Restaurants
+            </h2>
+            <p className="text-muted-foreground">
+              Manage your restaurants and their digital menus
+            </p>
           </div>
+          <Button onClick={handleCreate}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Restaurant
+          </Button>
+        </div>
+
+        <div className="rounded-md border">
+          {isLoading ? (
+            <div className="p-4 space-y-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-16 w-full" />
+              ))}
+            </div>
+          ) : !restaurants || restaurants.length === 0 ? (
+            <div className="flex flex-col items-center justify-center p-12 text-center">
+              <p className="text-muted-foreground mb-4">
+                No restaurants yet. Create your first restaurant to get started!
+              </p>
+              <Button onClick={handleCreate}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Restaurant
+              </Button>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Categories</TableHead>
+                  <TableHead>Dishes</TableHead>
+                  <TableHead>Slug</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {restaurants.map((restaurant) => (
+                  <TableRow key={restaurant.id}>
+                    <TableCell className="font-medium">
+                      {restaurant.name}
+                    </TableCell>
+                    <TableCell>{restaurant.location}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">
+                        {restaurant._count.categories}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">
+                        {restaurant._count.dishes}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <code className="text-xs bg-muted px-2 py-1 rounded">
+                        {restaurant.slug}
+                      </code>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleViewMenu(restaurant)}
+                          title="View Menu"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleShowQR(restaurant)}
+                          title="Show QR Code"
+                        >
+                          <QrCode className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(restaurant)}
+                          title="Edit"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(restaurant)}
+                          title="Delete"
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </div>
       </div>
+
+      <RestaurantFormDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        restaurant={selectedRestaurant}
+      />
+
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={confirmDelete}
+        title="Delete Restaurant"
+        description="Are you sure you want to delete"
+        itemName={restaurantToDelete?.name}
+        isLoading={deleteMutation.isPending}
+      />
+
+      {selectedRestaurant && (
+        <QRCodeDialog
+          open={qrDialogOpen}
+          onOpenChange={setQrDialogOpen}
+          url={getMenuUrl(selectedRestaurant.slug)}
+          restaurantName={selectedRestaurant.name}
+        />
+      )}
     </>
   );
 }
