@@ -3,7 +3,7 @@
 import { IconDashboard, IconListDetails } from "@tabler/icons-react";
 import * as React from "react";
 
-import { LogoutButton } from "~/components/logout-button";
+import { LogoutButton } from "~/components/auth/logout-button";
 import { NavMain } from "~/components/nav-main";
 import { NavUser } from "~/components/nav-user";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "~/components/ui/sidebar";

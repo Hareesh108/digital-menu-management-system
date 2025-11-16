@@ -7,9 +7,7 @@ import { toast } from "sonner";
 import type { RouterOutputs } from "~/trpc/react";
 import { api } from "~/trpc/react";
 
-import { CategoryFormDialog } from "~/components/category-form-dialog";
-import { DeleteConfirmationDialog } from "~/components/delete-confirmation-dialog";
-import { DishFormDialog } from "~/components/dish-form-dialog";
+import { CategoryFormDialog, DeleteConfirmationDialog, DishFormDialog } from "~/components/menu";
 import { SiteHeader } from "~/components/site-header";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";

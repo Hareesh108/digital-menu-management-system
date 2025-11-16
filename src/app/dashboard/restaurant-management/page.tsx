@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Edit, Trash2, QrCode, ExternalLink } from "lucide-react";
+import { Plus, Edit, Trash2, QrCode, ExternalLink, View, Eye, Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -9,8 +9,8 @@ import type { RouterOutputs } from "~/trpc/react";
 import { api } from "~/trpc/react";
 
 import { DeleteConfirmationDialog } from "~/components/delete-confirmation-dialog";
-import { QRCodeDialog } from "~/components/qr-code-dialog";
-import { RestaurantFormDialog } from "~/components/restaurant-form-dialog";
+import { QRCodeDialog } from "~/components/restaurant/qr-code-dialog";
+import { RestaurantFormDialog } from "~/components/restaurant/restaurant-form-dialog";
 import { SiteHeader } from "~/components/site-header";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -79,6 +79,12 @@ export default function RestaurantManagementPage() {
     return `/menu/${slug}`;
   };
 
+  const handleCopyMenuUrl = async (restaurant: Restaurant) => {
+    const url = `${window.location.origin}/menu/${restaurant.slug}`;
+    await navigator.clipboard.writeText(url);
+    toast.success("Menu link copied!");
+  };
+
   return (
     <>
       <SiteHeader title="Restaurant Management" />
@@ -144,18 +150,35 @@ export default function RestaurantManagementPage() {
                           size="icon"
                           onClick={() => handleViewMenu(restaurant)}
                           title="View Menu"
+                          className="cursor-pointer"
                         >
-                          <ExternalLink className="h-4 w-4" />
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleCopyMenuUrl(restaurant)}
+                          title="Copy URL"
+                          className="cursor-pointer"
+                        >
+                          <Copy className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => handleShowQR(restaurant)}
                           title="Show QR Code"
+                          className="cursor-pointer"
                         >
                           <QrCode className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleEdit(restaurant)} title="Edit">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(restaurant)}
+                          title="Edit"
+                          className="cursor-pointer"
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
@@ -163,7 +186,7 @@ export default function RestaurantManagementPage() {
                           size="icon"
                           onClick={() => handleDelete(restaurant)}
                           title="Delete"
-                          className="text-destructive hover:text-destructive"
+                          className="text-destructive hover:text-destructive cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

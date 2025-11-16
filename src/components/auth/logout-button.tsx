@@ -6,13 +6,7 @@ import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 
-import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "~/components/ui/sidebar";
+import { SidebarGroup, SidebarGroupContent, SidebarMenuButton } from "~/components/ui/sidebar";
 
 export function LogoutButton(props: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const router = useRouter();
