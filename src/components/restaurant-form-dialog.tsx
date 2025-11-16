@@ -42,7 +42,7 @@ export function RestaurantFormDialog({
       toast.success("Restaurant created successfully");
       void utils.restaurant.getAll.invalidate();
       onOpenChange(false);
-      reset();
+      // reset();
     },
     onError: (error) => {
       toast.error(error.message || "Failed to create restaurant");

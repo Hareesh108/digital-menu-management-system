@@ -1,7 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "~/components/ui/dialog";
+import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 import { Button } from "~/components/ui/button";
 import { Copy, Download, QrCode } from "lucide-react";
 import { toast } from "sonner";
@@ -21,15 +28,8 @@ export function QRCodeDialog({
 }: QRCodeDialogProps) {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
 
-  useEffect(() => {
-    if (open && url) {
-      generateQRCode();
-    }
-  }, [open, url]);
-
-  const generateQRCode = async () => {
+  const generateQRCode = useCallback(async () => {
     try {
-      // Dynamically import qrcode to avoid SSR issues
       const QRCode = (await import("qrcode")).default;
       const dataUrl = await QRCode.toDataURL(url, {
         width: 300,
@@ -44,10 +44,16 @@ export function QRCodeDialog({
       console.error("Error generating QR code:", error);
       toast.error("Failed to generate QR code");
     }
-  };
+  }, [url]);
+
+  useEffect(() => {
+    if (open && url) {
+      void generateQRCode();
+    }
+  }, [generateQRCode, open, url]);
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(url);
+    void navigator.clipboard.writeText(url);
     toast.success("Link copied to clipboard!");
   };
 
@@ -72,17 +78,19 @@ export function QRCodeDialog({
         </DialogHeader>
         <div className="flex flex-col items-center gap-4 py-4">
           {qrCodeDataUrl ? (
-            <div className="flex flex-col items-center gap-4">
-              <div className="rounded-lg border p-4 bg-white">
-                <img
+            <div>
+              <div className="rounded-lg border bg-white p-4">
+                <Image
                   src={qrCodeDataUrl}
                   alt="QR Code"
-                  className="w-64 h-64"
+                  width={256}
+                  height={256}
                 />
               </div>
-              <div className="flex flex-col gap-2 w-full">
-                <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                  <span className="text-sm truncate flex-1">{url}</span>
+
+              <div className="flex w-full flex-col gap-2">
+                <div className="bg-muted flex items-center gap-2 rounded-md p-2">
+                  <span className="flex-1 truncate text-sm">{url}</span>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -92,15 +100,19 @@ export function QRCodeDialog({
                     <Copy className="h-4 w-4" />
                   </Button>
                 </div>
-                <Button onClick={handleDownload} variant="outline" className="w-full">
-                  <Download className="h-4 w-4 mr-2" />
+                <Button
+                  onClick={handleDownload}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <Download className="mr-2 h-4 w-4" />
                   Download QR Code
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64">
-              <QrCode className="h-12 w-12 animate-spin text-muted-foreground" />
+            <div className="flex h-64 items-center justify-center">
+              <QrCode className="text-muted-foreground h-12 w-12 animate-spin" />
             </div>
           )}
         </div>
@@ -108,4 +120,3 @@ export function QRCodeDialog({
     </Dialog>
   );
 }
-
