@@ -55,7 +55,7 @@ export const restaurantRouter = createTRPCRouter({
 
       // NOTE: Using a placeholder ownerId since auth is disabled
       // TODO: Use ctx.session?.userId when auth is enabled
-      const placeholderOwnerId = "temp-owner-id";
+      const placeholderOwnerId = "cmi0v6zy00000ln6ci8mjxigx";
 
       const restaurant = await ctx.db.restaurant.create({
         data: {
