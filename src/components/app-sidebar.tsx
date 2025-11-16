@@ -5,15 +5,14 @@ import * as React from "react";
 
 import { LogoutButton } from "~/components/logout-button";
 import { NavMain } from "~/components/nav-main";
-import { NavSecondary } from "~/components/nav-secondary";
 import { NavUser } from "~/components/nav-user";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "~/components/ui/sidebar";
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Hi,",
+    email: "hareesh@gmail.com",
+    avatar: "/logo/user.png",
   },
   navMain: [
     {
@@ -37,7 +36,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavSecondary className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <LogoutButton />

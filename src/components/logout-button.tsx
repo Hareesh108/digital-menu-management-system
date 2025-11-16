@@ -6,9 +6,15 @@ import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
 
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "~/components/ui/sidebar";
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "~/components/ui/sidebar";
 
-export function LogoutButton() {
+export function LogoutButton(props: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const router = useRouter();
   const utils = api.useUtils();
 
@@ -35,13 +41,13 @@ export function LogoutButton() {
   };
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <SidebarMenuButton onClick={handleLogout} size="lg" className="w-full">
-          <IconLogout className="h-4 w-4" />
-          <span>Logout</span>
+    <SidebarGroup {...props}>
+      <SidebarGroupContent>
+        <SidebarMenuButton onClick={handleLogout} className="cursor-pointer">
+          <IconLogout />
+          Log out
         </SidebarMenuButton>
-      </SidebarMenuItem>
-    </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
   );
 }
