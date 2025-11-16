@@ -1,12 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import {
-  generateVerificationCode,
-  sendVerificationEmail,
-} from "~/server/auth/email";
-import { createSession, deleteSession } from "~/server/auth/session";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { generateVerificationCode, sendVerificationEmail } from "~/server/auth/email";
+import { createSession, deleteSession } from "~/server/auth/session";
 
 export const authRouter = createTRPCRouter({
   // Request verification code (for signup or login)
@@ -179,4 +176,3 @@ export const authRouter = createTRPCRouter({
     return { success: true };
   }),
 });
-

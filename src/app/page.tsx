@@ -1,21 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { QrCode, User, List, MapPin, ImageIcon, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
-import { FOOD_ITEMS } from "~/utils";
 import { FeatureCard, PreviewCard } from "~/components/landing-page";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -29,16 +20,12 @@ export default function LandingPage() {
       <header className="border-b">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="rounded-md bg-linear-to-tr from-purple-600 to-pink-500 p-2 shadow-sm">
+            <div className="bg-linear-to-tr rounded-md from-purple-600 to-pink-500 p-2 shadow-sm">
               <Sparkles className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-lg leading-none font-extrabold">
-                DigitalMenu
-              </h1>
-              <p className="text-xs text-slate-500">
-                QR menus & admin for restaurants
-              </p>
+              <h1 className="text-lg font-extrabold leading-none">DigitalMenu</h1>
+              <p className="text-xs text-slate-500">QR menus & admin for restaurants</p>
             </div>
           </div>
 
@@ -54,14 +41,12 @@ export default function LandingPage() {
         <section className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
           <div>
             <Badge className="mb-4">Built for restaurants</Badge>
-            <h2 className="text-4xl leading-tight font-extrabold sm:text-5xl">
-              Digital menus that load instantly —{" "}
-              <span className="text-indigo-600">QR & shareable links</span>
+            <h2 className="text-4xl font-extrabold leading-tight sm:text-5xl">
+              Digital menus that load instantly — <span className="text-indigo-600">QR & shareable links</span>
             </h2>
             <p className="mt-4 max-w-xl text-lg text-slate-600">
-              Manage restaurants, categories and dishes with spice level, images
-              and organized categories. Customers open menus via QR or a link —
-              no app required.
+              Manage restaurants, categories and dishes with spice level, images and organized categories. Customers
+              open menus via QR or a link — no app required.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -96,8 +81,7 @@ export default function LandingPage() {
         <section className="mt-16">
           <h3 className="text-2xl font-bold">Features</h3>
           <p className="mt-2 max-w-2xl text-slate-600">
-            Everything owners need to manage menus — and customers need to view
-            them.
+            Everything owners need to manage menus — and customers need to view them.
           </p>
 
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -153,5 +137,3 @@ export default function LandingPage() {
     </div>
   );
 }
-
-

@@ -8,9 +8,7 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
-    NODE_ENV: z
-      .enum(["development", "test", "production"])
-      .default("development"),
+    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     JWT_SECRET: z.string().min(32),
     // Email service configuration (Resend)
     RESEND_API_KEY: z.string().optional(),

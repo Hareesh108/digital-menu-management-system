@@ -1,6 +1,3 @@
- 
- 
- 
 import { env } from "~/env";
 
 /**
@@ -14,10 +11,7 @@ export function generateVerificationCode(): string {
  * Sends a verification code email to the user
  * For production, you should use a proper email service like Resend, SendGrid, etc.
  */
-export async function sendVerificationEmail(
-  email: string,
-  code: string,
-): Promise<void> {
+export async function sendVerificationEmail(email: string, code: string): Promise<void> {
   // In development, just log the code
   if (env.NODE_ENV === "development") {
     console.log(`\n📧 Verification code for ${email}: ${code}\n`);
@@ -32,9 +26,7 @@ export async function sendVerificationEmail(
   } else {
     // Fallback: log in production if no email service is configured
     console.log(`📧 Verification code for ${email}: ${code}`);
-    console.warn(
-      "⚠️  No email service configured. Verification code logged above.",
-    );
+    console.warn("⚠️  No email service configured. Verification code logged above.");
   }
 }
 
@@ -102,4 +94,3 @@ async function sendWithSMTP(email: string, code: string): Promise<void> {
     throw new Error("Failed to send verification email");
   }
 }
-

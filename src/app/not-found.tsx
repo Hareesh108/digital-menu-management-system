@@ -1,8 +1,8 @@
 "use client";
 
+import { Home, ArrowLeft, Bug } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Home, ArrowLeft, Bug } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -12,40 +12,30 @@ export default function NotFound() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
-      <div className="w-full max-w-lg flex flex-col items-center text-center">
+      <div className="flex w-full max-w-lg flex-col items-center text-center">
         <Card className="w-full bg-white shadow-sm">
           <CardContent className="p-8">
-            <h1 className="mb-3 text-3xl font-extrabold leading-tight">
-              Page not found
-            </h1>
+            <h1 className="mb-3 text-3xl font-extrabold leading-tight">Page not found</h1>
 
             <p className="mb-8 text-slate-600">
-              Oops — the page you are looking for doesn’t exist or may have been
-              moved. You can go back, return home, or tell us about this broken link.
+              Oops — the page you are looking for doesn’t exist or may have been moved. You can go back, return home, or
+              tell us about this broken link.
             </p>
 
             <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Button
-                onClick={() => router.back()}
-                variant="ghost"
-                className="w-full sm:w-auto cursor-pointer"
-              >
+              <Button onClick={() => router.back()} variant="ghost" className="w-full cursor-pointer sm:w-auto">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Go back
               </Button>
 
               <Link href="/" className="w-full sm:w-auto">
-                <Button className="w-full sm:w-auto cursor-pointer">
+                <Button className="w-full cursor-pointer sm:w-auto">
                   <Home className="mr-2 h-4 w-4" />
                   Take me home
                 </Button>
               </Link>
 
-              <Button
-                variant="outline"
-                disabled
-                className="w-full sm:w-auto"
-              >
+              <Button variant="outline" disabled className="w-full sm:w-auto">
                 <Bug className="mr-2 h-4 w-4" />
                 Report issue
               </Button>
@@ -59,7 +49,7 @@ export default function NotFound() {
 
         <p className="mt-8 text-xs text-slate-400">
           © {new Date().getFullYear()} DigitalMenu — need help?{" "}
-          <Link href="/contact" className="underline text-slate-600">
+          <Link href="/contact" className="text-slate-600 underline">
             Contact us
           </Link>
         </p>

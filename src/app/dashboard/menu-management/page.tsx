@@ -1,50 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Utensils } from "lucide-react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { SiteHeader } from "~/components/site-header";
-import { Button } from "~/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
-import { Badge } from "~/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { CategoryFormDialog } from "~/components/category-form-dialog";
-import { DishFormDialog } from "~/components/dish-form-dialog";
-import { DeleteConfirmationDialog } from "~/components/delete-confirmation-dialog";
-import { Skeleton } from "~/components/ui/skeleton";
-import { api } from "~/trpc/react";
+
 import type { RouterOutputs } from "~/trpc/react";
+import { api } from "~/trpc/react";
+
+import { CategoryFormDialog } from "~/components/category-form-dialog";
+import { DeleteConfirmationDialog } from "~/components/delete-confirmation-dialog";
+import { DishFormDialog } from "~/components/dish-form-dialog";
+import { SiteHeader } from "~/components/site-header";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { Skeleton } from "~/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 type Category = RouterOutputs["category"]["getAll"][number];
 type Dish = RouterOutputs["dish"]["getAll"][number];
 
 export default function MenuManagementPage() {
-  const [selectedRestaurantId, setSelectedRestaurantId] = useState<
-    string | null
-  >(null);
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [dishDialogOpen, setDishDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteType, setDeleteType] = useState<"category" | "dish" | null>(
-    null,
-  );
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null,
-  );
+  const [deleteType, setDeleteType] = useState<"category" | "dish" | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
   const [itemToDelete, setItemToDelete] = useState<{
     id: string;
@@ -53,25 +36,18 @@ export default function MenuManagementPage() {
   } | null>(null);
 
   const utils = api.useUtils();
-  const { data: restaurants, isLoading: restaurantsLoading } =
-    api.restaurant.getAll.useQuery();
+  const { data: restaurants, isLoading: restaurantsLoading } = api.restaurant.getAll.useQuery();
 
   useEffect(() => {
-    if (
-      restaurants &&
-      restaurants.length > 0 &&
-      !selectedRestaurantId &&
-      !restaurantsLoading
-    ) {
+    if (restaurants && restaurants.length > 0 && !selectedRestaurantId && !restaurantsLoading) {
       setSelectedRestaurantId(restaurants[0]?.id ?? null);
     }
   }, [restaurants, restaurantsLoading, selectedRestaurantId]);
 
-  const { data: categories, isLoading: categoriesLoading } =
-    api.category.getAll.useQuery(
-      { restaurantId: selectedRestaurantId! },
-      { enabled: !!selectedRestaurantId },
-    );
+  const { data: categories, isLoading: categoriesLoading } = api.category.getAll.useQuery(
+    { restaurantId: selectedRestaurantId! },
+    { enabled: !!selectedRestaurantId },
+  );
 
   const { data: dishes, isLoading: dishesLoading } = api.dish.getAll.useQuery(
     { restaurantId: selectedRestaurantId! },
@@ -152,11 +128,7 @@ export default function MenuManagementPage() {
           <p className="text-muted-foreground mb-4 text-center">
             Create a restaurant first to start managing your menu.
           </p>
-          <Button
-            onClick={() =>
-              (window.location.href = "/dashboard/restaurant-management")
-            }
-          >
+          <Button onClick={() => (window.location.href = "/dashboard/restaurant-management")}>
             Go to Restaurant Management
           </Button>
         </div>
@@ -171,9 +143,7 @@ export default function MenuManagementPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">Menu Items</h2>
-            <p className="text-muted-foreground">
-              Manage categories and dishes for your restaurant
-            </p>
+            <p className="text-muted-foreground">Manage categories and dishes for your restaurant</p>
           </div>
           {selectedRestaurantId && (
             <div className="flex gap-2">
@@ -226,9 +196,7 @@ export default function MenuManagementPage() {
                   </div>
                 ) : !categories || categories.length === 0 ? (
                   <div className="flex flex-col items-center justify-center p-12 text-center">
-                    <p className="text-muted-foreground mb-4">
-                      No categories yet. Create your first category!
-                    </p>
+                    <p className="text-muted-foreground mb-4">No categories yet. Create your first category!</p>
                     <Button onClick={handleCreateCategory}>
                       <Plus className="mr-2 h-4 w-4" />
                       Create Category
@@ -246,13 +214,9 @@ export default function MenuManagementPage() {
                     <TableBody>
                       {categories.map((category) => (
                         <TableRow key={category.id}>
-                          <TableCell className="font-medium">
-                            {category.name}
-                          </TableCell>
+                          <TableCell className="font-medium">{category.name}</TableCell>
                           <TableCell>
-                            <Badge variant="secondary">
-                              {category._count?.dishes ?? 0}
-                            </Badge>
+                            <Badge variant="secondary">{category._count?.dishes ?? 0}</Badge>
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end gap-2">
@@ -293,9 +257,7 @@ export default function MenuManagementPage() {
                   </div>
                 ) : !dishes || dishes.length === 0 ? (
                   <div className="flex flex-col items-center justify-center p-12 text-center">
-                    <p className="text-muted-foreground mb-4">
-                      No dishes yet. Create your first dish!
-                    </p>
+                    <p className="text-muted-foreground mb-4">No dishes yet. Create your first dish!</p>
                     <Button onClick={handleCreateDish}>
                       <Plus className="mr-2 h-4 w-4" />
                       Create Dish
@@ -315,39 +277,25 @@ export default function MenuManagementPage() {
                     <TableBody>
                       {dishes.map((dish) => (
                         <TableRow key={dish.id}>
-                          <TableCell className="font-medium">
-                            {dish.name}
-                          </TableCell>
-                          <TableCell className="max-w-md truncate">
-                            {dish.description}
-                          </TableCell>
+                          <TableCell className="font-medium">{dish.name}</TableCell>
+                          <TableCell className="max-w-md truncate">{dish.description}</TableCell>
                           <TableCell>
                             {dish.spiceLevel && dish.spiceLevel > 0 ? (
-                              <Badge variant="outline">
-                                {"🌶️".repeat(dish.spiceLevel)}
-                              </Badge>
+                              <Badge variant="outline">{"🌶️".repeat(dish.spiceLevel)}</Badge>
                             ) : (
-                              <span className="text-muted-foreground text-sm">
-                                -
-                              </span>
+                              <span className="text-muted-foreground text-sm">-</span>
                             )}
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-wrap gap-1">
                               {dish.categories.length > 0 ? (
                                 dish.categories.slice(0, 2).map((cat) => (
-                                  <Badge
-                                    key={cat.id}
-                                    variant="secondary"
-                                    className="text-xs"
-                                  >
+                                  <Badge key={cat.id} variant="secondary" className="text-xs">
                                     {cat.name}
                                   </Badge>
                                 ))
                               ) : (
-                                <span className="text-muted-foreground text-sm">
-                                  No categories
-                                </span>
+                                <span className="text-muted-foreground text-sm">No categories</span>
                               )}
                               {dish.categories.length > 2 && (
                                 <Badge variant="secondary" className="text-xs">
@@ -358,12 +306,7 @@ export default function MenuManagementPage() {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end gap-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleEditDish(dish)}
-                                title="Edit"
-                              >
+                              <Button variant="ghost" size="icon" onClick={() => handleEditDish(dish)} title="Edit">
                                 <Edit className="h-4 w-4" />
                               </Button>
                               <Button
@@ -412,9 +355,7 @@ export default function MenuManagementPage() {
           title={`Delete ${itemToDelete?.type === "category" ? "Category" : "Dish"}`}
           description={`Are you sure you want to delete this ${itemToDelete?.type === "category" ? "category" : "dish"}`}
           itemName={itemToDelete?.name}
-          isLoading={
-            deleteCategoryMutation.isPending || deleteDishMutation.isPending
-          }
+          isLoading={deleteCategoryMutation.isPending || deleteDishMutation.isPending}
         />
       </div>
     </>

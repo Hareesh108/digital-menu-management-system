@@ -1,18 +1,12 @@
 "use client";
 
-import * as React from "react";
 import { IconLogout } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import * as React from "react";
 
-import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenuButton,
-} from "~/components/ui/sidebar";
+import { SidebarGroup, SidebarGroupContent, SidebarMenuButton } from "~/components/ui/sidebar";
 
-export function NavSecondary(
-  props: React.ComponentPropsWithoutRef<typeof SidebarGroup>
-) {
+export function NavSecondary(props: React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const router = useRouter();
 
   async function handleLogout() {

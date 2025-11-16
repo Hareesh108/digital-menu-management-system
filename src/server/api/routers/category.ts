@@ -57,75 +57,71 @@ export const categoryRouter = createTRPCRouter({
     }),
 
   // Get all categories for a restaurant
-  getAll: protectedProcedure
-    .input(z.object({ restaurantId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      // Verify restaurant exists
-      const restaurant = await ctx.db.restaurant.findFirst({
-        where: {
-          id: input.restaurantId,
-          // ownerId: ctx.session?.userId,
-        },
+  getAll: protectedProcedure.input(z.object({ restaurantId: z.string() })).query(async ({ ctx, input }) => {
+    // NOTE: Authentication skipped
+    // Verify restaurant exists
+    const restaurant = await ctx.db.restaurant.findFirst({
+      where: {
+        id: input.restaurantId,
+        // ownerId: ctx.session?.userId,
+      },
+    });
+
+    if (!restaurant) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Restaurant not found",
       });
+    }
 
-      if (!restaurant) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Restaurant not found",
-        });
-      }
-
-      const categories = await ctx.db.category.findMany({
-        where: {
-          restaurantId: input.restaurantId,
-        },
-        include: {
-          _count: {
-            select: {
-              dishes: true,
-            },
+    const categories = await ctx.db.category.findMany({
+      where: {
+        restaurantId: input.restaurantId,
+      },
+      include: {
+        _count: {
+          select: {
+            dishes: true,
           },
         },
-        orderBy: {
-          name: "asc",
-        },
-      });
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
 
-      return categories;
-    }),
+    return categories;
+  }),
 
   // Get a single category by ID
-  getById: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      const category = await ctx.db.category.findFirst({
-        where: {
-          id: input.id,
-          // restaurant: {
-          //   ownerId: ctx.session?.userId,
-          // },
-        },
-        include: {
-          restaurant: true,
-          dishes: {
-            include: {
-              dish: true,
-            },
+  getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    // NOTE: Authentication skipped
+    const category = await ctx.db.category.findFirst({
+      where: {
+        id: input.id,
+        // restaurant: {
+        //   ownerId: ctx.session?.userId,
+        // },
+      },
+      include: {
+        restaurant: true,
+        dishes: {
+          include: {
+            dish: true,
           },
         },
+      },
+    });
+
+    if (!category) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Category not found",
       });
+    }
 
-      if (!category) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Category not found",
-        });
-      }
-
-      return category;
-    }),
+    return category;
+  }),
 
   // Update a category
   update: protectedProcedure
@@ -186,32 +182,29 @@ export const categoryRouter = createTRPCRouter({
     }),
 
   // Delete a category
-  delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      // Check if category exists
-      const existing = await ctx.db.category.findFirst({
-        where: {
-          id: input.id,
-          // restaurant: {
-          //   ownerId: ctx.session?.userId,
-          // },
-        },
+  delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
+    // NOTE: Authentication skipped
+    // Check if category exists
+    const existing = await ctx.db.category.findFirst({
+      where: {
+        id: input.id,
+        // restaurant: {
+        //   ownerId: ctx.session?.userId,
+        // },
+      },
+    });
+
+    if (!existing) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Category not found",
       });
+    }
 
-      if (!existing) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Category not found",
-        });
-      }
+    await ctx.db.category.delete({
+      where: { id: input.id },
+    });
 
-      await ctx.db.category.delete({
-        where: { id: input.id },
-      });
-
-      return { success: true };
-    }),
+    return { success: true };
+  }),
 });
-

@@ -82,81 +82,77 @@ export const dishRouter = createTRPCRouter({
     }),
 
   // Get all dishes for a restaurant
-  getAll: protectedProcedure
-    .input(z.object({ restaurantId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      // Verify restaurant exists
-      const restaurant = await ctx.db.restaurant.findFirst({
-        where: {
-          id: input.restaurantId,
-          // ownerId: ctx.session?.userId,
-        },
+  getAll: protectedProcedure.input(z.object({ restaurantId: z.string() })).query(async ({ ctx, input }) => {
+    // NOTE: Authentication skipped
+    // Verify restaurant exists
+    const restaurant = await ctx.db.restaurant.findFirst({
+      where: {
+        id: input.restaurantId,
+        // ownerId: ctx.session?.userId,
+      },
+    });
+
+    if (!restaurant) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Restaurant not found",
       });
+    }
 
-      if (!restaurant) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Restaurant not found",
-        });
-      }
-
-      const dishes = await ctx.db.dish.findMany({
-        where: {
-          restaurantId: input.restaurantId,
-        },
-        include: {
-          categories: {
-            include: {
-              category: true,
-            },
+    const dishes = await ctx.db.dish.findMany({
+      where: {
+        restaurantId: input.restaurantId,
+      },
+      include: {
+        categories: {
+          include: {
+            category: true,
           },
         },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-      return dishes.map((dish) => ({
-        ...dish,
-        categories: dish.categories.map((dc) => dc.category),
-      }));
-    }),
+    return dishes.map((dish) => ({
+      ...dish,
+      categories: dish.categories.map((dc) => dc.category),
+    }));
+  }),
 
   // Get a single dish by ID
-  getById: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      const dish = await ctx.db.dish.findFirst({
-        where: {
-          id: input.id,
-          // restaurant: {
-          //   ownerId: ctx.session?.userId,
-          // },
-        },
-        include: {
-          restaurant: true,
-          categories: {
-            include: {
-              category: true,
-            },
+  getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    // NOTE: Authentication skipped
+    const dish = await ctx.db.dish.findFirst({
+      where: {
+        id: input.id,
+        // restaurant: {
+        //   ownerId: ctx.session?.userId,
+        // },
+      },
+      include: {
+        restaurant: true,
+        categories: {
+          include: {
+            category: true,
           },
         },
+      },
+    });
+
+    if (!dish) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Dish not found",
       });
+    }
 
-      if (!dish) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Dish not found",
-        });
-      }
-
-      return {
-        ...dish,
-        categories: dish.categories.map((dc) => dc.category),
-      };
-    }),
+    return {
+      ...dish,
+      categories: dish.categories.map((dc) => dc.category),
+    };
+  }),
 
   // Update a dish
   update: protectedProcedure
@@ -222,11 +218,9 @@ export const dishRouter = createTRPCRouter({
       } = {};
 
       if (updateData.name !== undefined) dataToUpdate.name = updateData.name;
-      if (updateData.description !== undefined)
-        dataToUpdate.description = updateData.description;
+      if (updateData.description !== undefined) dataToUpdate.description = updateData.description;
       if (updateData.image !== undefined) dataToUpdate.image = updateData.image;
-      if (updateData.spiceLevel !== undefined)
-        dataToUpdate.spiceLevel = updateData.spiceLevel;
+      if (updateData.spiceLevel !== undefined) dataToUpdate.spiceLevel = updateData.spiceLevel;
 
       // Update dish
       const dish = await ctx.db.dish.update({
@@ -259,32 +253,29 @@ export const dishRouter = createTRPCRouter({
     }),
 
   // Delete a dish
-  delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      // Check if dish exists
-      const existing = await ctx.db.dish.findFirst({
-        where: {
-          id: input.id,
-          // restaurant: {
-          //   ownerId: ctx.session?.userId,
-          // },
-        },
+  delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
+    // NOTE: Authentication skipped
+    // Check if dish exists
+    const existing = await ctx.db.dish.findFirst({
+      where: {
+        id: input.id,
+        // restaurant: {
+        //   ownerId: ctx.session?.userId,
+        // },
+      },
+    });
+
+    if (!existing) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Dish not found",
       });
+    }
 
-      if (!existing) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Dish not found",
-        });
-      }
+    await ctx.db.dish.delete({
+      where: { id: input.id },
+    });
 
-      await ctx.db.dish.delete({
-        where: { id: input.id },
-      });
-
-      return { success: true };
-    }),
+    return { success: true };
+  }),
 });
-

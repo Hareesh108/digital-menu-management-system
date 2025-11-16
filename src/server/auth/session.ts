@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+
 import { env } from "~/env";
 
 const JWT_SECRET = new TextEncoder().encode(env.JWT_SECRET);
@@ -49,4 +50,3 @@ export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);
 }
-

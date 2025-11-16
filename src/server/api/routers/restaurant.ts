@@ -1,11 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
 // Helper function to generate slug from name
 function generateSlug(name: string): string {
@@ -94,68 +90,63 @@ export const restaurantRouter = createTRPCRouter({
   }),
 
   // Get a single restaurant by ID
-  getById: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      const restaurant = await ctx.db.restaurant.findFirst({
-        where: {
-          id: input.id,
-          // ownerId: ctx.session?.userId,
-        },
-        include: {
-          categories: {
-            orderBy: {
-              name: "asc",
-            },
+  getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    // NOTE: Authentication skipped
+    const restaurant = await ctx.db.restaurant.findFirst({
+      where: {
+        id: input.id,
+        // ownerId: ctx.session?.userId,
+      },
+      include: {
+        categories: {
+          orderBy: {
+            name: "asc",
           },
-          dishes: {
-            include: {
-              categories: {
-                include: {
-                  category: true,
-                },
+        },
+        dishes: {
+          include: {
+            categories: {
+              include: {
+                category: true,
               },
             },
-            orderBy: {
-              createdAt: "desc",
-            },
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         },
+      },
+    });
+
+    if (!restaurant) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Restaurant not found",
       });
+    }
 
-      if (!restaurant) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Restaurant not found",
-        });
-      }
-
-      return restaurant;
-    }),
+    return restaurant;
+  }),
 
   // Get restaurant by slug (public access for customer menu view)
-  getBySlug: publicProcedure
-    .input(z.object({ slug: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const restaurant = await ctx.db.restaurant.findUnique({
-        where: {
-          slug: input.slug,
-        },
-        include: {
-          categories: {
-            orderBy: {
-              name: "asc",
-            },
-            include: {
-              dishes: {
-                include: {
-                  dish: {
-                    include: {
-                      categories: {
-                        include: {
-                          category: true,
-                        },
+  getBySlug: publicProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
+    const restaurant = await ctx.db.restaurant.findUnique({
+      where: {
+        slug: input.slug,
+      },
+      include: {
+        categories: {
+          orderBy: {
+            name: "asc",
+          },
+          include: {
+            dishes: {
+              include: {
+                dish: {
+                  include: {
+                    categories: {
+                      include: {
+                        category: true,
                       },
                     },
                   },
@@ -163,53 +154,54 @@ export const restaurantRouter = createTRPCRouter({
               },
             },
           },
-          dishes: {
-            include: {
-              categories: {
-                include: {
-                  category: true,
-                },
+        },
+        dishes: {
+          include: {
+            categories: {
+              include: {
+                category: true,
               },
             },
-            orderBy: {
-              createdAt: "desc",
-            },
+          },
+          orderBy: {
+            createdAt: "desc",
           },
         },
+      },
+    });
+
+    if (!restaurant) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Restaurant not found",
       });
+    }
 
-      if (!restaurant) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Restaurant not found",
-        });
-      }
+    // Transform the data to match the expected structure for the menu view
+    const categories = restaurant.categories.map((cat) => ({
+      id: cat.id,
+      name: cat.name,
+      restaurantId: cat.restaurantId,
+      createdAt: cat.createdAt,
+      updatedAt: cat.updatedAt,
+      dishes: cat.dishes.map((dc) => ({
+        ...dc.dish,
+        categories: dc.dish.categories.map((dc2) => dc2.category),
+      })),
+    }));
 
-      // Transform the data to match the expected structure for the menu view
-      const categories = restaurant.categories.map((cat) => ({
-        id: cat.id,
-        name: cat.name,
-        restaurantId: cat.restaurantId,
-        createdAt: cat.createdAt,
-        updatedAt: cat.updatedAt,
-        dishes: cat.dishes.map((dc) => ({
-          ...dc.dish,
-          categories: dc.dish.categories.map((dc2) => dc2.category),
-        })),
-      }));
-
-      return {
-        id: restaurant.id,
-        name: restaurant.name,
-        location: restaurant.location,
-        slug: restaurant.slug,
-        categories,
-        dishes: restaurant.dishes.map((dish) => ({
-          ...dish,
-          categories: dish.categories.map((dc) => dc.category),
-        })),
-      };
-    }),
+    return {
+      id: restaurant.id,
+      name: restaurant.name,
+      location: restaurant.location,
+      slug: restaurant.slug,
+      categories,
+      dishes: restaurant.dishes.map((dish) => ({
+        ...dish,
+        categories: dish.categories.map((dc) => dc.category),
+      })),
+    };
+  }),
 
   // Update a restaurant
   update: protectedProcedure
@@ -259,30 +251,27 @@ export const restaurantRouter = createTRPCRouter({
     }),
 
   // Delete a restaurant
-  delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      // Check if restaurant exists
-      const existing = await ctx.db.restaurant.findFirst({
-        where: {
-          id: input.id,
-          // ownerId: ctx.session?.userId,
-        },
+  delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
+    // NOTE: Authentication skipped
+    // Check if restaurant exists
+    const existing = await ctx.db.restaurant.findFirst({
+      where: {
+        id: input.id,
+        // ownerId: ctx.session?.userId,
+      },
+    });
+
+    if (!existing) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Restaurant not found",
       });
+    }
 
-      if (!existing) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Restaurant not found",
-        });
-      }
+    await ctx.db.restaurant.delete({
+      where: { id: input.id },
+    });
 
-      await ctx.db.restaurant.delete({
-        where: { id: input.id },
-      });
-
-      return { success: true };
-    }),
+    return { success: true };
+  }),
 });
-

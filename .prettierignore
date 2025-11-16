@@ -1,0 +1,12 @@
+build/*
+dist/*
+public/*
+**/out/*
+**/.next/*
+**/node_modules/*
+README.md
+.env
+src/components/ui
+
+package-lock.json
+bun.lockb

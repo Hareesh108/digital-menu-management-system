@@ -2,6 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+
+import { FOOD_ITEMS } from "~/utils";
+
+import type { RouterOutputs } from "~/trpc/react";
+import { api } from "~/trpc/react";
+
+import { Button } from "~/components/ui/button";
+import { Checkbox } from "~/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -10,25 +18,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldDescription,
-} from "~/components/ui/field";
+import { Field, FieldGroup, FieldLabel, FieldDescription } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import { Checkbox } from "~/components/ui/checkbox";
-import { api } from "~/trpc/react";
-import type { RouterOutputs } from "~/trpc/react";
-import { FOOD_ITEMS } from "~/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 
 type Dish = RouterOutputs["dish"]["getById"];
 
@@ -39,19 +31,11 @@ interface DishFormDialogProps {
   dish?: Dish | null;
 }
 
-export function DishFormDialog({
-  open,
-  onOpenChange,
-  restaurantId,
-  dish,
-}: DishFormDialogProps) {
+export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishFormDialogProps) {
   const utils = api.useUtils();
   const isEditing = !!dish;
 
-  const { data: categories } = api.category.getAll.useQuery(
-    { restaurantId },
-    { enabled: open },
-  );
+  const { data: categories } = api.category.getAll.useQuery({ restaurantId }, { enabled: open });
 
   const createMutation = api.dish.create.useMutation({
     onSuccess: () => {
@@ -125,9 +109,7 @@ export function DishFormDialog({
 
   const toggleCategory = (categoryId: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId],
+      prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId],
     );
   };
 
@@ -135,8 +117,7 @@ export function DishFormDialog({
     e.preventDefault();
     if (!validate()) return;
 
-    const spice =
-      spiceLevel !== "0" && spiceLevel !== "" ? parseInt(spiceLevel, 10) : null;
+    const spice = spiceLevel !== "0" && spiceLevel !== "" ? parseInt(spiceLevel, 10) : null;
 
     const dishData = {
       name: name.trim(),
@@ -165,9 +146,7 @@ export function DishFormDialog({
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit Dish" : "Create Dish"}</DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Update your dish information"
-              : "Add a new dish to your menu"}
+            {isEditing ? "Update your dish information" : "Add a new dish to your menu"}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -181,11 +160,7 @@ export function DishFormDialog({
                 placeholder="e.g., Margherita Pizza"
                 disabled={createMutation.isPending || updateMutation.isPending}
               />
-              {errors.name && (
-                <FieldDescription className="text-destructive">
-                  {errors.name}
-                </FieldDescription>
-              )}
+              {errors.name && <FieldDescription className="text-destructive">{errors.name}</FieldDescription>}
             </Field>
             <Field>
               <FieldLabel htmlFor="description">Description</FieldLabel>
@@ -195,13 +170,11 @@ export function DishFormDialog({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your dish..."
                 rows={3}
-                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={createMutation.isPending || updateMutation.isPending}
               />
               {errors.description && (
-                <FieldDescription className="text-destructive">
-                  {errors.description}
-                </FieldDescription>
+                <FieldDescription className="text-destructive">{errors.description}</FieldDescription>
               )}
             </Field>
             <Field>
@@ -225,9 +198,7 @@ export function DishFormDialog({
                 </SelectContent>
               </Select>
 
-              <FieldDescription>
-                Optional: Choose an image for your dish
-              </FieldDescription>
+              <FieldDescription>Optional: Choose an image for your dish</FieldDescription>
             </Field>
             <Field>
               <FieldLabel htmlFor="spiceLevel">Spice Level</FieldLabel>
@@ -246,9 +217,7 @@ export function DishFormDialog({
                   <SelectItem value="2">🌶️🌶️ Medium (2)</SelectItem>
                   <SelectItem value="3">🌶️🌶️🌶️ Hot (3)</SelectItem>
                   <SelectItem value="4">🌶️🌶️🌶️🌶️ Very Hot (4)</SelectItem>
-                  <SelectItem value="5">
-                    🌶️🌶️🌶️🌶️🌶️ Extremely Hot (5)
-                  </SelectItem>
+                  <SelectItem value="5">🌶️🌶️🌶️🌶️🌶️ Extremely Hot (5)</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
@@ -256,26 +225,19 @@ export function DishFormDialog({
               <FieldLabel>Categories</FieldLabel>
               <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border p-4">
                 {!categories || categories.length === 0 ? (
-                  <p className="text-muted-foreground text-sm">
-                    No categories available. Create a category first.
-                  </p>
+                  <p className="text-muted-foreground text-sm">No categories available. Create a category first.</p>
                 ) : (
                   categories.map((category) => (
-                    <div
-                      key={category.id}
-                      className="flex items-center space-x-2"
-                    >
+                    <div key={category.id} className="flex items-center space-x-2">
                       <Checkbox
                         id={`category-${category.id}`}
                         checked={selectedCategories.includes(category.id)}
                         onCheckedChange={() => toggleCategory(category.id)}
-                        disabled={
-                          createMutation.isPending || updateMutation.isPending
-                        }
+                        disabled={createMutation.isPending || updateMutation.isPending}
                       />
                       <label
                         htmlFor={`category-${category.id}`}
-                        className="flex-1 cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        className="flex-1 cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
                         {category.name}
                       </label>
@@ -283,9 +245,7 @@ export function DishFormDialog({
                   ))
                 )}
               </div>
-              <FieldDescription>
-                Select one or more categories for this dish
-              </FieldDescription>
+              <FieldDescription>Select one or more categories for this dish</FieldDescription>
             </Field>
           </FieldGroup>
           <DialogFooter>
@@ -297,10 +257,7 @@ export function DishFormDialog({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={createMutation.isPending || updateMutation.isPending}
-            >
+            <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
               {createMutation.isPending || updateMutation.isPending
                 ? isEditing
                   ? "Updating..."

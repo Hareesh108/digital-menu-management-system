@@ -1,12 +1,7 @@
 import Link from "next/link";
+
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 
 export default function NotFound() {
   return (
@@ -14,10 +9,7 @@ export default function NotFound() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Menu Not Found</CardTitle>
-          <CardDescription>
-            The menu you&apos;re looking for doesn&apos;t exist or has been
-            removed.
-          </CardDescription>
+          <CardDescription>The menu you&apos;re looking for doesn&apos;t exist or has been removed.</CardDescription>
         </CardHeader>
         <CardContent>
           <Link href="/">
@@ -28,4 +20,3 @@ export default function NotFound() {
     </div>
   );
 }
-

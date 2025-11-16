@@ -1,26 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+
+import { api } from "~/trpc/react";
+
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "~/components/ui/field";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
 import { VerificationCodeInput } from "~/components/verification-code-input";
-import { api } from "~/trpc/react";
 
 type Step = "info" | "code";
 
@@ -107,8 +98,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   disabled={requestCode.isPending}
                 />
                 <FieldDescription>
-                  We&apos;ll use this to contact you. We will not share your
-                  email with anyone else.
+                  We&apos;ll use this to contact you. We will not share your email with anyone else.
                 </FieldDescription>
               </Field>
               <Field>
@@ -142,13 +132,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           <div className="space-y-4">
             <Field>
               <FieldLabel>Verification Code</FieldLabel>
-              <VerificationCodeInput
-                onComplete={handleCodeComplete}
-                disabled={verifyCode.isPending}
-              />
-              <FieldDescription className="text-center">
-                Check your email for the 6-digit code
-              </FieldDescription>
+              <VerificationCodeInput onComplete={handleCodeComplete} disabled={verifyCode.isPending} />
+              <FieldDescription className="text-center">Check your email for the 6-digit code</FieldDescription>
             </Field>
 
             <div className="flex flex-col gap-2">

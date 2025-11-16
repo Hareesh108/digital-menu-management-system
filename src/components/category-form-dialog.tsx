@@ -2,6 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+
+import type { RouterOutputs } from "~/trpc/react";
+import { api } from "~/trpc/react";
+
+import { Button } from "~/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,16 +15,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldDescription,
-} from "~/components/ui/field";
+import { Field, FieldGroup, FieldLabel, FieldDescription } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { api } from "~/trpc/react";
-import type { RouterOutputs } from "~/trpc/react";
 
 type Category = RouterOutputs["category"]["getById"];
 
@@ -30,12 +27,7 @@ interface CategoryFormDialogProps {
   category?: Category | null;
 }
 
-export function CategoryFormDialog({
-  open,
-  onOpenChange,
-  restaurantId,
-  category,
-}: CategoryFormDialogProps) {
+export function CategoryFormDialog({ open, onOpenChange, restaurantId, category }: CategoryFormDialogProps) {
   const utils = api.useUtils();
   const isEditing = !!category;
 
@@ -109,13 +101,9 @@ export function CategoryFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? "Edit Category" : "Create Category"}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? "Edit Category" : "Create Category"}</DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Update your category information"
-              : "Add a new category to organize dishes"}
+            {isEditing ? "Update your category information" : "Add a new category to organize dishes"}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -129,11 +117,7 @@ export function CategoryFormDialog({
                 placeholder="e.g., Appetizers, Main Course, Desserts"
                 disabled={createMutation.isPending || updateMutation.isPending}
               />
-              {errors.name && (
-                <FieldDescription className="text-destructive">
-                  {errors.name}
-                </FieldDescription>
-              )}
+              {errors.name && <FieldDescription className="text-destructive">{errors.name}</FieldDescription>}
             </Field>
           </FieldGroup>
           <DialogFooter>
@@ -146,10 +130,7 @@ export function CategoryFormDialog({
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={createMutation.isPending || updateMutation.isPending}
-              >
+              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
                 {createMutation.isPending || updateMutation.isPending
                   ? isEditing
                     ? "Updating..."

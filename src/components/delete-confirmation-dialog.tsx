@@ -10,7 +10,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import { Button } from "~/components/ui/button";
 
 interface DeleteConfirmationDialogProps {
   open: boolean;
@@ -38,13 +37,8 @@ export function DeleteConfirmationDialog({
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>
             {description}
-            {itemName && (
-              <span className="font-semibold text-foreground">
-                {" "}
-                &quot;{itemName}&quot;
-              </span>
-            )}
-            ? This action cannot be undone.
+            {itemName && <span className="text-foreground font-semibold"> &quot;{itemName}&quot;</span>}? This action
+            cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -61,4 +55,3 @@ export function DeleteConfirmationDialog({
     </AlertDialog>
   );
 }
-

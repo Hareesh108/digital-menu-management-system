@@ -16,6 +16,7 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "lint:check-fix": "prettier --write --cache \"src/**/*.{js,jsx,ts,tsx}\" && eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit"
@@ -75,6 +76,8 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.23.0",
     "eslint-config-next": "^15.2.3",
+    "eslint-plugin-perfectionist": "^4.15.1",
+    "eslint-plugin-unused-imports": "^4.3.0",
     "postcss": "^8.5.3",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",

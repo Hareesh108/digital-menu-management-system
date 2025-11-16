@@ -1,12 +1,10 @@
 import { notFound } from "next/navigation";
+
 import { api } from "~/trpc/server";
+
 import { MenuView } from "~/components/menu-view";
 
-export default async function MenuPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function MenuPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   let restaurant;
@@ -19,11 +17,7 @@ export default async function MenuPage({
   return <MenuView restaurant={restaurant} />;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   try {
@@ -38,4 +32,3 @@ export async function generateMetadata({
     };
   }
 }
-

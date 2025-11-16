@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
 import { MapPin } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
+import Image from "next/image";
+import React from "react";
+
 import { FOOD_ITEMS } from "~/utils";
+
+import { Card, CardContent } from "~/components/ui/card";
 
 const SAMPLE_MENU = {
   restaurant: {
@@ -24,22 +25,16 @@ const SAMPLE_MENU = {
           name: "Apple Pie",
           price: 140,
           spiceLevel: 0,
-          image:
-            FOOD_ITEMS.find((f) => f.name.toLowerCase().includes("apple"))
-              ?.url ?? FOOD_ITEMS[0]?.url,
-          description:
-            "A classic apple pie with flaky crust, lightly spiced filling and a hint of citrus.",
+          image: FOOD_ITEMS.find((f) => f.name.toLowerCase().includes("apple"))?.url ?? FOOD_ITEMS[0]?.url,
+          description: "A classic apple pie with flaky crust, lightly spiced filling and a hint of citrus.",
         },
         {
           id: "d-choc-mousse",
           name: "Chocolate Mousse",
           price: 140,
           spiceLevel: 0,
-          image:
-            FOOD_ITEMS.find((f) => f.name.toLowerCase().includes("chocolate"))
-              ?.url ?? FOOD_ITEMS[1]?.url,
-          description:
-            "Creamy layered chocolate mousse with a soft biscuit base and chocolate glaze.",
+          image: FOOD_ITEMS.find((f) => f.name.toLowerCase().includes("chocolate"))?.url ?? FOOD_ITEMS[1]?.url,
+          description: "Creamy layered chocolate mousse with a soft biscuit base and chocolate glaze.",
         },
       ],
     },
@@ -53,22 +48,16 @@ const SAMPLE_MENU = {
           name: "Aloo Tikki",
           price: 90,
           spiceLevel: 2,
-          image:
-            FOOD_ITEMS.find((f) => f.name.toLowerCase().includes("aalu"))
-              ?.url ?? FOOD_ITEMS[2]?.url,
-          description:
-            "Crispy potato patties spiced with herbs and served with chutney.",
+          image: FOOD_ITEMS.find((f) => f.name.toLowerCase().includes("aalu"))?.url ?? FOOD_ITEMS[2]?.url,
+          description: "Crispy potato patties spiced with herbs and served with chutney.",
         },
         {
           id: "d-breaded-mush",
           name: "Breaded Mushrooms",
           price: 130,
           spiceLevel: 1,
-          image:
-            FOOD_ITEMS.find((f) => f.name.toLowerCase().includes("mush"))
-              ?.url ?? FOOD_ITEMS[3]?.url,
-          description:
-            "Golden battered mushrooms served with herb dip and lemon.",
+          image: FOOD_ITEMS.find((f) => f.name.toLowerCase().includes("mush"))?.url ?? FOOD_ITEMS[3]?.url,
+          description: "Golden battered mushrooms served with herb dip and lemon.",
         },
       ],
     },
@@ -78,8 +67,7 @@ const SAMPLE_MENU = {
 export function PreviewCard({ className = "" }: { className?: string }) {
   const { restaurant, categories } = SAMPLE_MENU;
 
-  const previewImage =
-    FOOD_ITEMS[Math.floor(Math.random() * FOOD_ITEMS.length)];
+  const previewImage = FOOD_ITEMS[Math.floor(Math.random() * FOOD_ITEMS.length)];
 
   return (
     <Card className={`overflow-hidden shadow-lg ${className}`}>
@@ -107,9 +95,7 @@ export function PreviewCard({ className = "" }: { className?: string }) {
               {categories.map((cat) => (
                 <div key={cat.id} className="border-t pt-2 last:border-b-0">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-semibold text-slate-800">
-                      {cat.name}
-                    </h4>
+                    <h4 className="text-sm font-semibold text-slate-800">{cat.name}</h4>
                     <div className="text-sm text-slate-500">{cat.subtitle}</div>
                   </div>
 
@@ -125,18 +111,12 @@ export function PreviewCard({ className = "" }: { className?: string }) {
                                   : "border-emerald-500 bg-emerald-500"
                               }`}
                             />
-                            <span className="truncate text-sm font-medium">
-                              {dish.name}
-                            </span>
+                            <span className="truncate text-sm font-medium">{dish.name}</span>
                           </div>
 
-                          <div className="mt-1 text-sm font-medium text-slate-700">
-                            ₹ {dish.price}
-                          </div>
+                          <div className="mt-1 text-sm font-medium text-slate-700">₹ {dish.price}</div>
 
-                          <p className="mt-2 line-clamp-2 text-sm text-slate-600">
-                            {dish.description}
-                          </p>
+                          <p className="mt-2 line-clamp-2 text-sm text-slate-600">{dish.description}</p>
                         </div>
 
                         <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-slate-100">

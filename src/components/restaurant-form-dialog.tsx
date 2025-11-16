@@ -2,6 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+
+import type { RouterOutputs } from "~/trpc/react";
+import { api } from "~/trpc/react";
+
+import { Button } from "~/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,16 +15,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "~/components/ui/field";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { api } from "~/trpc/react";
-import type { RouterOutputs } from "~/trpc/react";
 
 type Restaurant = RouterOutputs["restaurant"]["getAll"][number];
 
@@ -29,11 +26,7 @@ interface RestaurantFormDialogProps {
   restaurant?: Restaurant | null;
 }
 
-export function RestaurantFormDialog({
-  open,
-  onOpenChange,
-  restaurant,
-}: RestaurantFormDialogProps) {
+export function RestaurantFormDialog({ open, onOpenChange, restaurant }: RestaurantFormDialogProps) {
   const utils = api.useUtils();
   const isEditing = !!restaurant;
 
@@ -62,9 +55,7 @@ export function RestaurantFormDialog({
 
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
-  const [errors, setErrors] = useState<{ name?: string; location?: string }>(
-    {},
-  );
+  const [errors, setErrors] = useState<{ name?: string; location?: string }>({});
 
   useEffect(() => {
     if (restaurant) {
@@ -111,13 +102,9 @@ export function RestaurantFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? "Edit Restaurant" : "Create Restaurant"}
-          </DialogTitle>
+          <DialogTitle>{isEditing ? "Edit Restaurant" : "Create Restaurant"}</DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? "Update your restaurant information"
-              : "Add a new restaurant to manage"}
+            {isEditing ? "Update your restaurant information" : "Add a new restaurant to manage"}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -131,11 +118,7 @@ export function RestaurantFormDialog({
                 placeholder="My Restaurant"
                 disabled={createMutation.isPending || updateMutation.isPending}
               />
-              {errors.name && (
-                <FieldDescription className="text-destructive">
-                  {errors.name}
-                </FieldDescription>
-              )}
+              {errors.name && <FieldDescription className="text-destructive">{errors.name}</FieldDescription>}
             </Field>
             <Field>
               <FieldLabel htmlFor="location">Location</FieldLabel>
@@ -146,11 +129,7 @@ export function RestaurantFormDialog({
                 placeholder="123 Main St, City"
                 disabled={createMutation.isPending || updateMutation.isPending}
               />
-              {errors.location && (
-                <FieldDescription className="text-destructive">
-                  {errors.location}
-                </FieldDescription>
-              )}
+              {errors.location && <FieldDescription className="text-destructive">{errors.location}</FieldDescription>}
             </Field>
           </FieldGroup>
           <DialogFooter>
@@ -162,10 +141,7 @@ export function RestaurantFormDialog({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={createMutation.isPending || updateMutation.isPending}
-            >
+            <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
               {createMutation.isPending || updateMutation.isPending
                 ? isEditing
                   ? "Updating..."
@@ -180,4 +156,3 @@ export function RestaurantFormDialog({
     </Dialog>
   );
 }
-

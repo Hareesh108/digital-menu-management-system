@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+
 import { cn } from "~/lib/utils";
+
 import { Input } from "~/components/ui/input";
 
 interface VerificationCodeInputProps {
@@ -59,20 +61,20 @@ export function VerificationCodeInput({
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, length);
-    
+
     if (pastedData.length === length) {
       const newCodes = pastedData.split("");
       setCodes(newCodes);
-      
+
       // Focus last input
       inputRefs.current[length - 1]?.focus();
-      
+
       onComplete(pastedData);
     }
   };
 
   return (
-    <div className={cn("flex gap-2 justify-center", className)}>
+    <div className={cn("flex justify-center gap-2", className)}>
       {Array.from({ length }).map((_, index) => (
         <Input
           key={index}
@@ -87,10 +89,9 @@ export function VerificationCodeInput({
           onKeyDown={(e) => handleKeyDown(index, e)}
           onPaste={handlePaste}
           disabled={disabled}
-          className="w-12 h-12 text-center text-lg font-semibold"
+          className="h-12 w-12 text-center text-lg font-semibold"
         />
       ))}
     </div>
   );
 }
-

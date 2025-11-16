@@ -1,26 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Plus, Edit, Trash2, QrCode, ExternalLink } from "lucide-react";
-import { SiteHeader } from "~/components/site-header";
-import { Button } from "~/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
-import { Badge } from "~/components/ui/badge";
-import { RestaurantFormDialog } from "~/components/restaurant-form-dialog";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+
+import type { RouterOutputs } from "~/trpc/react";
+import { api } from "~/trpc/react";
+
 import { DeleteConfirmationDialog } from "~/components/delete-confirmation-dialog";
 import { QRCodeDialog } from "~/components/qr-code-dialog";
-import { api } from "~/trpc/react";
+import { RestaurantFormDialog } from "~/components/restaurant-form-dialog";
+import { SiteHeader } from "~/components/site-header";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import type { RouterOutputs } from "~/trpc/react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 
 type Restaurant = RouterOutputs["restaurant"]["getAll"][number];
 
@@ -29,10 +24,8 @@ export default function RestaurantManagementPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [qrDialogOpen, setQrDialogOpen] = useState(false);
-  const [selectedRestaurant, setSelectedRestaurant] =
-    useState<Restaurant | null>(null);
-  const [restaurantToDelete, setRestaurantToDelete] =
-    useState<Restaurant | null>(null);
+  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
+  const [restaurantToDelete, setRestaurantToDelete] = useState<Restaurant | null>(null);
 
   const utils = api.useUtils();
   const { data: restaurants, isLoading } = api.restaurant.getAll.useQuery();
@@ -92,22 +85,18 @@ export default function RestaurantManagementPage() {
       <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">
-              Your Restaurants
-            </h2>
-            <p className="text-muted-foreground">
-              Manage your restaurants and their digital menus
-            </p>
+            <h2 className="text-2xl font-bold tracking-tight">Your Restaurants</h2>
+            <p className="text-muted-foreground">Manage your restaurants and their digital menus</p>
           </div>
           <Button onClick={handleCreate}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Add Restaurant
           </Button>
         </div>
 
         <div className="rounded-md border">
           {isLoading ? (
-            <div className="p-4 space-y-3">
+            <div className="space-y-3 p-4">
               {[1, 2, 3].map((i) => (
                 <Skeleton key={i} className="h-16 w-full" />
               ))}
@@ -118,7 +107,7 @@ export default function RestaurantManagementPage() {
                 No restaurants yet. Create your first restaurant to get started!
               </p>
               <Button onClick={handleCreate}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Create Restaurant
               </Button>
             </div>
@@ -137,24 +126,16 @@ export default function RestaurantManagementPage() {
               <TableBody>
                 {restaurants.map((restaurant) => (
                   <TableRow key={restaurant.id}>
-                    <TableCell className="font-medium">
-                      {restaurant.name}
-                    </TableCell>
+                    <TableCell className="font-medium">{restaurant.name}</TableCell>
                     <TableCell>{restaurant.location}</TableCell>
                     <TableCell>
-                      <Badge variant="secondary">
-                        {restaurant._count?.categories ?? 0}
-                      </Badge>
+                      <Badge variant="secondary">{restaurant._count?.categories ?? 0}</Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary">
-                        {restaurant._count?.dishes ?? 0}
-                      </Badge>
+                      <Badge variant="secondary">{restaurant._count?.dishes ?? 0}</Badge>
                     </TableCell>
                     <TableCell>
-                      <code className="text-xs bg-muted px-2 py-1 rounded">
-                        {restaurant.slug}
-                      </code>
+                      <code className="bg-muted rounded px-2 py-1 text-xs">{restaurant.slug}</code>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
@@ -174,12 +155,7 @@ export default function RestaurantManagementPage() {
                         >
                           <QrCode className="h-4 w-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleEdit(restaurant)}
-                          title="Edit"
-                        >
+                        <Button variant="ghost" size="icon" onClick={() => handleEdit(restaurant)} title="Edit">
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
@@ -201,11 +177,7 @@ export default function RestaurantManagementPage() {
         </div>
       </div>
 
-      <RestaurantFormDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        restaurant={selectedRestaurant}
-      />
+      <RestaurantFormDialog open={dialogOpen} onOpenChange={setDialogOpen} restaurant={selectedRestaurant} />
 
       <DeleteConfirmationDialog
         open={deleteDialogOpen}

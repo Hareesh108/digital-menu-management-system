@@ -1,19 +1,17 @@
 "use client";
 
+import { IconLogout } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { IconLogout } from "@tabler/icons-react";
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "~/components/ui/sidebar";
+
 import { api } from "~/trpc/react";
+
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "~/components/ui/sidebar";
 
 export function LogoutButton() {
   const router = useRouter();
   const utils = api.useUtils();
-  
+
   // NOTE: Authentication is disabled, so we'll just clear any local state
   const logoutMutation = api.auth.logout.useMutation({
     onSuccess: () => {
@@ -47,4 +45,3 @@ export function LogoutButton() {
     </SidebarMenu>
   );
 }
-
