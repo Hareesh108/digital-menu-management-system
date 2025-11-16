@@ -13,11 +13,12 @@ export const categoryRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Verify restaurant belongs to user
+      // NOTE: Authentication skipped
+      // Verify restaurant exists
       const restaurant = await ctx.db.restaurant.findFirst({
         where: {
           id: input.restaurantId,
-          ownerId: ctx.session.userId,
+          // ownerId: ctx.session?.userId,
         },
       });
 
@@ -59,11 +60,12 @@ export const categoryRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(z.object({ restaurantId: z.string() }))
     .query(async ({ ctx, input }) => {
-      // Verify restaurant belongs to user
+      // NOTE: Authentication skipped
+      // Verify restaurant exists
       const restaurant = await ctx.db.restaurant.findFirst({
         where: {
           id: input.restaurantId,
-          ownerId: ctx.session.userId,
+          // ownerId: ctx.session?.userId,
         },
       });
 
@@ -97,12 +99,13 @@ export const categoryRouter = createTRPCRouter({
   getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
+      // NOTE: Authentication skipped
       const category = await ctx.db.category.findFirst({
         where: {
           id: input.id,
-          restaurant: {
-            ownerId: ctx.session.userId,
-          },
+          // restaurant: {
+          //   ownerId: ctx.session?.userId,
+          // },
         },
         include: {
           restaurant: true,
@@ -135,13 +138,14 @@ export const categoryRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, name } = input;
 
-      // Check if category exists and belongs to user's restaurant
+      // NOTE: Authentication skipped
+      // Check if category exists
       const existing = await ctx.db.category.findFirst({
         where: {
           id,
-          restaurant: {
-            ownerId: ctx.session.userId,
-          },
+          // restaurant: {
+          //   ownerId: ctx.session?.userId,
+          // },
         },
       });
 
@@ -185,13 +189,14 @@ export const categoryRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      // Check if category exists and belongs to user's restaurant
+      // NOTE: Authentication skipped
+      // Check if category exists
       const existing = await ctx.db.category.findFirst({
         where: {
           id: input.id,
-          restaurant: {
-            ownerId: ctx.session.userId,
-          },
+          // restaurant: {
+          //   ownerId: ctx.session?.userId,
+          // },
         },
       });
 

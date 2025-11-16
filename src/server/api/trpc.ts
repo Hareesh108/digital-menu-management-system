@@ -113,21 +113,22 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  * Protected (authenticated) procedure
  *
  * This requires the user to be authenticated. It will throw an error if the user is not logged in.
+ * 
+ * NOTE: Authentication is currently commented out for development. Uncomment later.
  */
-export const protectedProcedure = t.procedure
-  .use(timingMiddleware)
-  .use(async ({ ctx, next }) => {
-    if (!ctx.session) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "You must be logged in to access this resource",
-      });
-    }
+export const protectedProcedure = t.procedure.use(timingMiddleware);
+  // .use(async ({ ctx, next }) => {
+  //   if (!ctx.session) {
+  //     throw new TRPCError({
+  //       code: "UNAUTHORIZED",
+  //       message: "You must be logged in to access this resource",
+  //     });
+  //   }
 
-    return next({
-      ctx: {
-        ...ctx,
-        session: ctx.session as SessionPayload, // Type assertion since we checked it exists
-      },
-    });
-  });
+  //   return next({
+  //     ctx: {
+  //       ...ctx,
+  //       session: ctx.session as SessionPayload, // Type assertion since we checked it exists
+  //     },
+  //   });
+  // });

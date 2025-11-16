@@ -46,9 +46,11 @@ export default function MenuManagementPage() {
     null,
   );
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
-  const [itemToDelete, setItemToDelete] = useState<
-    { id: string; name: string; type: "category" | "dish" } | null
-  >(null);
+  const [itemToDelete, setItemToDelete] = useState<{
+    id: string;
+    name: string;
+    type: "category" | "dish";
+  } | null>(null);
 
   const utils = api.useUtils();
   const { data: restaurants, isLoading: restaurantsLoading } =
@@ -62,7 +64,7 @@ export default function MenuManagementPage() {
       !selectedRestaurantId &&
       !restaurantsLoading
     ) {
-      setSelectedRestaurantId(restaurants[0].id);
+      setSelectedRestaurantId(restaurants[0]?.id ?? null);
     }
   }, [restaurants, restaurantsLoading, selectedRestaurantId]);
 
@@ -146,12 +148,16 @@ export default function MenuManagementPage() {
       <>
         <SiteHeader title="Menu Management" />
         <div className="flex flex-1 flex-col items-center justify-center p-12">
-          <Utensils className="h-12 w-12 text-muted-foreground mb-4" />
-          <p className="text-lg font-semibold mb-2">No Restaurants Found</p>
-          <p className="text-muted-foreground text-center mb-4">
+          <Utensils className="text-muted-foreground mb-4 h-12 w-12" />
+          <p className="mb-2 text-lg font-semibold">No Restaurants Found</p>
+          <p className="text-muted-foreground mb-4 text-center">
             Create a restaurant first to start managing your menu.
           </p>
-          <Button onClick={() => window.location.href = "/dashboard/restaurant-management"}>
+          <Button
+            onClick={() =>
+              (window.location.href = "/dashboard/restaurant-management")
+            }
+          >
             Go to Restaurant Management
           </Button>
         </div>
@@ -172,15 +178,12 @@ export default function MenuManagementPage() {
           </div>
           {selectedRestaurantId && (
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={handleCreateCategory}
-              >
-                <Plus className="h-4 w-4 mr-2" />
+              <Button variant="outline" onClick={handleCreateCategory}>
+                <Plus className="mr-2 h-4 w-4" />
                 Add Category
               </Button>
               <Button onClick={handleCreateDish}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Add Dish
               </Button>
             </div>
@@ -217,7 +220,7 @@ export default function MenuManagementPage() {
             <TabsContent value="categories" className="space-y-4">
               <div className="rounded-md border">
                 {categoriesLoading ? (
-                  <div className="p-4 space-y-3">
+                  <div className="space-y-3 p-4">
                     {[1, 2, 3].map((i) => (
                       <Skeleton key={i} className="h-12 w-full" />
                     ))}
@@ -228,7 +231,7 @@ export default function MenuManagementPage() {
                       No categories yet. Create your first category!
                     </p>
                     <Button onClick={handleCreateCategory}>
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="mr-2 h-4 w-4" />
                       Create Category
                     </Button>
                   </div>
@@ -249,7 +252,7 @@ export default function MenuManagementPage() {
                           </TableCell>
                           <TableCell>
                             <Badge variant="secondary">
-                              {category._count.dishes}
+                              {category._count?.dishes ?? 0}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-right">
@@ -284,7 +287,7 @@ export default function MenuManagementPage() {
             <TabsContent value="dishes" className="space-y-4">
               <div className="rounded-md border">
                 {dishesLoading ? (
-                  <div className="p-4 space-y-3">
+                  <div className="space-y-3 p-4">
                     {[1, 2, 3].map((i) => (
                       <Skeleton key={i} className="h-16 w-full" />
                     ))}
@@ -295,7 +298,7 @@ export default function MenuManagementPage() {
                       No dishes yet. Create your first dish!
                     </p>
                     <Button onClick={handleCreateDish}>
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="mr-2 h-4 w-4" />
                       Create Dish
                     </Button>
                   </div>

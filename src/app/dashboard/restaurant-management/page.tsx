@@ -143,12 +143,12 @@ export default function RestaurantManagementPage() {
                     <TableCell>{restaurant.location}</TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {restaurant._count.categories}
+                        {restaurant._count?.categories ?? 0}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {restaurant._count.dishes}
+                        {restaurant._count?.dishes ?? 0}
                       </Badge>
                     </TableCell>
                     <TableCell>
