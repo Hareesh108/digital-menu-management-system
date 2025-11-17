@@ -2,9 +2,6 @@
 
 This repository contains a Next.js + tRPC + Prisma app for managing restaurants, categories and dishes, with email-based OTP login.
 
-- Live demo: <https://digital-menu-management-system-qt8o.vercel.app/>
-- Repository: <https://github.com/Hareesh108/digital-menu-management-system>
-
 ## Functional overview
 
 - User registration and login via email verification code (OTP)

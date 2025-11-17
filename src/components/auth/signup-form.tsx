@@ -1,8 +1,9 @@
 "use client";
 
+import { countries as COUNTRIES, getEmojiFlag, type TCountryCode } from "countries-list";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { api } from "~/trpc/react";
@@ -12,6 +13,8 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 type Step = "info" | "code";
 
@@ -62,6 +65,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     verifyCode.mutate({ email, code });
   };
 
+  const countryOptions = useMemo(() => {
+    return Object.entries(COUNTRIES)
+      .map(([code, data]) => ({ code, name: data.name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, []);
+
   return (
     <Card {...props}>
       <CardHeader>
@@ -105,15 +114,25 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               </Field>
               <Field>
                 <FieldLabel htmlFor="country">Country</FieldLabel>
-                <Input
-                  id="country"
-                  type="text"
-                  placeholder="Enter the country name"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  required
-                  disabled={requestCode.isPending}
-                />
+
+                <Select value={country} onValueChange={setCountry} disabled={requestCode.isPending}>
+                  <SelectTrigger id="country" className="w-full">
+                    <SelectValue placeholder="Select a country" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    {countryOptions.map((c) => (
+                      <SelectItem key={c.code} value={c.name} className="flex items-center gap-3">
+                        <span className="text-lg">{getEmojiFlag(c.code as TCountryCode)}</span>
+                        <span>{c.name}</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <FieldDescription>
+                  Select your country. If you prefer, start typing the name to find it faster.
+                </FieldDescription>
               </Field>
               <FieldGroup>
                 <Field>
