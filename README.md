@@ -30,15 +30,13 @@ The project uses the following technologies (T3-style stack + additions):
 - `npm run build` / `npm run preview` — build and preview
 - `npm run db:push` — reset database (danger: deletes data)
 - `npm run lint:check-fix` —Added prettier and eslint config to format code.
+- Use can Bun as well.
 
 ### 📽️ Demo Video
 
-<video width="600" controls poster="https://raw.githubusercontent.com/Hareesh108/digital-menu-management-system/main/public/demo/poster.png">
-  <source src="https://raw.githubusercontent.com/Hareesh108/digital-menu-management-system/main/public/demo/demo.webm" type="video/webm">
-  <source src="https://raw.githubusercontent.com/Hareesh108/digital-menu-management-system/main/public/demo/demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.  
-  <a href="https://raw.githubusercontent.com/Hareesh108/digital-menu-management-system/main/public/demo/demo.webm">Download the demo</a>.
-</video>
+[Watch demo video](public/demo/demo.webm)
+
+- You can download if it is not supported
 
 ## Quick start (developer)
 
