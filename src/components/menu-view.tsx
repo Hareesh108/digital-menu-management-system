@@ -194,7 +194,7 @@ export function MenuView({ restaurant }: MenuViewProps) {
                       <div className="min-w-0 flex-1">
                         <div className="mb-2 flex items-center gap-2">
                           <span
-                            className={`h-3 w-3 rounded-full border ${dish ? "border-emerald-500 bg-emerald-500" : "border-rose-500 bg-rose-500"}`}
+                            className={`h-3 w-3 rounded-full border ${dish.isVeg ? "border-emerald-500 bg-emerald-500" : "border-rose-500 bg-rose-500"}`}
                             aria-hidden
                           />
                           {dish.spiceLevel && dish.spiceLevel > 0 && (
@@ -204,7 +204,9 @@ export function MenuView({ restaurant }: MenuViewProps) {
 
                         <h3 className="truncate text-sm font-semibold text-slate-800">{dish.name}</h3>
 
-                        <div className="mt-1 text-sm font-medium text-slate-700">{dish != null ? `₹ ${100}` : "—"}</div>
+                        <div className="mt-1 text-sm font-medium text-slate-700">
+                          {dish.price != null ? `₹ ${dish.price}` : "—"}
+                        </div>
 
                         <p className="mt-2 line-clamp-3 text-sm text-slate-600">{dish.description ?? ""}</p>
                       </div>
@@ -265,7 +267,7 @@ export function MenuView({ restaurant }: MenuViewProps) {
                   <div className="px-2 py-2">
                     {latestItems.length > 0 && (
                       <div className="mb-3">
-                        <div className="text-center text-sm font-semibold text-slate-500">Recently Viewed</div>
+                        <div className="text-center text-sm font-semibold text-slate-500">Recently Viewed (2)</div>
                         <div className="mt-2 space-y-1">
                           {latestItems.map((d) => (
                             <button
@@ -328,7 +330,9 @@ export function MenuView({ restaurant }: MenuViewProps) {
               ) : null}
 
               <div className="flex-1">
-                <div className="mb-2 text-sm font-medium text-slate-700">{selectedDish != null ? `₹ ${700}` : "—"}</div>
+                <div className="mb-2 text-sm font-medium text-slate-700">
+                  {selectedDish?.price != null ? `₹ ${selectedDish?.price}` : "—"}
+                </div>
                 <div className="text-sm text-slate-600">{selectedDish?.description}</div>
 
                 <div className="mt-3 flex flex-wrap gap-2">

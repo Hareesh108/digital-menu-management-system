@@ -2659,9 +2659,9 @@ export namespace Prisma {
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    owner?: boolean | UserDefaultArgs<ExtArgs>
     categories?: boolean | Restaurant$categoriesArgs<ExtArgs>
     dishes?: boolean | Restaurant$dishesArgs<ExtArgs>
+    owner?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | RestaurantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["restaurant"]>
 
@@ -2699,9 +2699,9 @@ export namespace Prisma {
 
   export type RestaurantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "location" | "slug" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["restaurant"]>
   export type RestaurantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    owner?: boolean | UserDefaultArgs<ExtArgs>
     categories?: boolean | Restaurant$categoriesArgs<ExtArgs>
     dishes?: boolean | Restaurant$dishesArgs<ExtArgs>
+    owner?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | RestaurantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RestaurantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2714,9 +2714,9 @@ export namespace Prisma {
   export type $RestaurantPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Restaurant"
     objects: {
-      owner: Prisma.$UserPayload<ExtArgs>
       categories: Prisma.$CategoryPayload<ExtArgs>[]
       dishes: Prisma.$DishPayload<ExtArgs>[]
+      owner: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3120,9 +3120,9 @@ export namespace Prisma {
    */
   export interface Prisma__RestaurantClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     categories<T extends Restaurant$categoriesArgs<ExtArgs> = {}>(args?: Subset<T, Restaurant$categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     dishes<T extends Restaurant$dishesArgs<ExtArgs> = {}>(args?: Subset<T, Restaurant$dishesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DishPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    owner<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4723,10 +4723,12 @@ export namespace Prisma {
 
   export type DishAvgAggregateOutputType = {
     spiceLevel: number | null
+    price: number | null
   }
 
   export type DishSumAggregateOutputType = {
     spiceLevel: number | null
+    price: number | null
   }
 
   export type DishMinAggregateOutputType = {
@@ -4735,6 +4737,8 @@ export namespace Prisma {
     description: string | null
     image: string | null
     spiceLevel: number | null
+    price: number | null
+    isVeg: boolean | null
     restaurantId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4746,6 +4750,8 @@ export namespace Prisma {
     description: string | null
     image: string | null
     spiceLevel: number | null
+    price: number | null
+    isVeg: boolean | null
     restaurantId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4757,6 +4763,8 @@ export namespace Prisma {
     description: number
     image: number
     spiceLevel: number
+    price: number
+    isVeg: number
     restaurantId: number
     createdAt: number
     updatedAt: number
@@ -4766,10 +4774,12 @@ export namespace Prisma {
 
   export type DishAvgAggregateInputType = {
     spiceLevel?: true
+    price?: true
   }
 
   export type DishSumAggregateInputType = {
     spiceLevel?: true
+    price?: true
   }
 
   export type DishMinAggregateInputType = {
@@ -4778,6 +4788,8 @@ export namespace Prisma {
     description?: true
     image?: true
     spiceLevel?: true
+    price?: true
+    isVeg?: true
     restaurantId?: true
     createdAt?: true
     updatedAt?: true
@@ -4789,6 +4801,8 @@ export namespace Prisma {
     description?: true
     image?: true
     spiceLevel?: true
+    price?: true
+    isVeg?: true
     restaurantId?: true
     createdAt?: true
     updatedAt?: true
@@ -4800,6 +4814,8 @@ export namespace Prisma {
     description?: true
     image?: true
     spiceLevel?: true
+    price?: true
+    isVeg?: true
     restaurantId?: true
     createdAt?: true
     updatedAt?: true
@@ -4898,6 +4914,8 @@ export namespace Prisma {
     description: string
     image: string | null
     spiceLevel: number | null
+    price: number | null
+    isVeg: boolean | null
     restaurantId: string
     createdAt: Date
     updatedAt: Date
@@ -4928,6 +4946,8 @@ export namespace Prisma {
     description?: boolean
     image?: boolean
     spiceLevel?: boolean
+    price?: boolean
+    isVeg?: boolean
     restaurantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4942,6 +4962,8 @@ export namespace Prisma {
     description?: boolean
     image?: boolean
     spiceLevel?: boolean
+    price?: boolean
+    isVeg?: boolean
     restaurantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4954,6 +4976,8 @@ export namespace Prisma {
     description?: boolean
     image?: boolean
     spiceLevel?: boolean
+    price?: boolean
+    isVeg?: boolean
     restaurantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4966,12 +4990,14 @@ export namespace Prisma {
     description?: boolean
     image?: boolean
     spiceLevel?: boolean
+    price?: boolean
+    isVeg?: boolean
     restaurantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DishOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "image" | "spiceLevel" | "restaurantId" | "createdAt" | "updatedAt", ExtArgs["result"]["dish"]>
+  export type DishOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "image" | "spiceLevel" | "price" | "isVeg" | "restaurantId" | "createdAt" | "updatedAt", ExtArgs["result"]["dish"]>
   export type DishInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
     categories?: boolean | Dish$categoriesArgs<ExtArgs>
@@ -4996,6 +5022,8 @@ export namespace Prisma {
       description: string
       image: string | null
       spiceLevel: number | null
+      price: number | null
+      isVeg: boolean | null
       restaurantId: string
       createdAt: Date
       updatedAt: Date
@@ -5429,6 +5457,8 @@ export namespace Prisma {
     readonly description: FieldRef<"Dish", 'String'>
     readonly image: FieldRef<"Dish", 'String'>
     readonly spiceLevel: FieldRef<"Dish", 'Int'>
+    readonly price: FieldRef<"Dish", 'Float'>
+    readonly isVeg: FieldRef<"Dish", 'Boolean'>
     readonly restaurantId: FieldRef<"Dish", 'String'>
     readonly createdAt: FieldRef<"Dish", 'DateTime'>
     readonly updatedAt: FieldRef<"Dish", 'DateTime'>
@@ -6026,8 +6056,8 @@ export namespace Prisma {
     dishId?: boolean
     categoryId?: boolean
     createdAt?: boolean
-    dish?: boolean | DishDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
+    dish?: boolean | DishDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dishCategory"]>
 
   export type DishCategorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6035,8 +6065,8 @@ export namespace Prisma {
     dishId?: boolean
     categoryId?: boolean
     createdAt?: boolean
-    dish?: boolean | DishDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
+    dish?: boolean | DishDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dishCategory"]>
 
   export type DishCategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6044,8 +6074,8 @@ export namespace Prisma {
     dishId?: boolean
     categoryId?: boolean
     createdAt?: boolean
-    dish?: boolean | DishDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
+    dish?: boolean | DishDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dishCategory"]>
 
   export type DishCategorySelectScalar = {
@@ -6057,23 +6087,23 @@ export namespace Prisma {
 
   export type DishCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dishId" | "categoryId" | "createdAt", ExtArgs["result"]["dishCategory"]>
   export type DishCategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    dish?: boolean | DishDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
+    dish?: boolean | DishDefaultArgs<ExtArgs>
   }
   export type DishCategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    dish?: boolean | DishDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
+    dish?: boolean | DishDefaultArgs<ExtArgs>
   }
   export type DishCategoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    dish?: boolean | DishDefaultArgs<ExtArgs>
     category?: boolean | CategoryDefaultArgs<ExtArgs>
+    dish?: boolean | DishDefaultArgs<ExtArgs>
   }
 
   export type $DishCategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "DishCategory"
     objects: {
-      dish: Prisma.$DishPayload<ExtArgs>
       category: Prisma.$CategoryPayload<ExtArgs>
+      dish: Prisma.$DishPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6474,8 +6504,8 @@ export namespace Prisma {
    */
   export interface Prisma__DishCategoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    dish<T extends DishDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DishDefaultArgs<ExtArgs>>): Prisma__DishClient<$Result.GetResult<Prisma.$DishPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     category<T extends CategoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CategoryDefaultArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    dish<T extends DishDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DishDefaultArgs<ExtArgs>>): Prisma__DishClient<$Result.GetResult<Prisma.$DishPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6982,6 +7012,8 @@ export namespace Prisma {
     description: 'description',
     image: 'image',
     spiceLevel: 'spiceLevel',
+    price: 'price',
+    isVeg: 'isVeg',
     restaurantId: 'restaurantId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -7181,9 +7213,9 @@ export namespace Prisma {
     ownerId?: StringFilter<"Restaurant"> | string
     createdAt?: DateTimeFilter<"Restaurant"> | Date | string
     updatedAt?: DateTimeFilter<"Restaurant"> | Date | string
-    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     categories?: CategoryListRelationFilter
     dishes?: DishListRelationFilter
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type RestaurantOrderByWithRelationInput = {
@@ -7194,9 +7226,9 @@ export namespace Prisma {
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    owner?: UserOrderByWithRelationInput
     categories?: CategoryOrderByRelationAggregateInput
     dishes?: DishOrderByRelationAggregateInput
+    owner?: UserOrderByWithRelationInput
   }
 
   export type RestaurantWhereUniqueInput = Prisma.AtLeast<{
@@ -7210,9 +7242,9 @@ export namespace Prisma {
     ownerId?: StringFilter<"Restaurant"> | string
     createdAt?: DateTimeFilter<"Restaurant"> | Date | string
     updatedAt?: DateTimeFilter<"Restaurant"> | Date | string
-    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     categories?: CategoryListRelationFilter
     dishes?: DishListRelationFilter
+    owner?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "slug">
 
   export type RestaurantOrderByWithAggregationInput = {
@@ -7309,6 +7341,8 @@ export namespace Prisma {
     description?: StringFilter<"Dish"> | string
     image?: StringNullableFilter<"Dish"> | string | null
     spiceLevel?: IntNullableFilter<"Dish"> | number | null
+    price?: FloatNullableFilter<"Dish"> | number | null
+    isVeg?: BoolNullableFilter<"Dish"> | boolean | null
     restaurantId?: StringFilter<"Dish"> | string
     createdAt?: DateTimeFilter<"Dish"> | Date | string
     updatedAt?: DateTimeFilter<"Dish"> | Date | string
@@ -7322,6 +7356,8 @@ export namespace Prisma {
     description?: SortOrder
     image?: SortOrderInput | SortOrder
     spiceLevel?: SortOrderInput | SortOrder
+    price?: SortOrderInput | SortOrder
+    isVeg?: SortOrderInput | SortOrder
     restaurantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7338,6 +7374,8 @@ export namespace Prisma {
     description?: StringFilter<"Dish"> | string
     image?: StringNullableFilter<"Dish"> | string | null
     spiceLevel?: IntNullableFilter<"Dish"> | number | null
+    price?: FloatNullableFilter<"Dish"> | number | null
+    isVeg?: BoolNullableFilter<"Dish"> | boolean | null
     restaurantId?: StringFilter<"Dish"> | string
     createdAt?: DateTimeFilter<"Dish"> | Date | string
     updatedAt?: DateTimeFilter<"Dish"> | Date | string
@@ -7351,6 +7389,8 @@ export namespace Prisma {
     description?: SortOrder
     image?: SortOrderInput | SortOrder
     spiceLevel?: SortOrderInput | SortOrder
+    price?: SortOrderInput | SortOrder
+    isVeg?: SortOrderInput | SortOrder
     restaurantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7370,6 +7410,8 @@ export namespace Prisma {
     description?: StringWithAggregatesFilter<"Dish"> | string
     image?: StringNullableWithAggregatesFilter<"Dish"> | string | null
     spiceLevel?: IntNullableWithAggregatesFilter<"Dish"> | number | null
+    price?: FloatNullableWithAggregatesFilter<"Dish"> | number | null
+    isVeg?: BoolNullableWithAggregatesFilter<"Dish"> | boolean | null
     restaurantId?: StringWithAggregatesFilter<"Dish"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Dish"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Dish"> | Date | string
@@ -7383,8 +7425,8 @@ export namespace Prisma {
     dishId?: StringFilter<"DishCategory"> | string
     categoryId?: StringFilter<"DishCategory"> | string
     createdAt?: DateTimeFilter<"DishCategory"> | Date | string
-    dish?: XOR<DishScalarRelationFilter, DishWhereInput>
     category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+    dish?: XOR<DishScalarRelationFilter, DishWhereInput>
   }
 
   export type DishCategoryOrderByWithRelationInput = {
@@ -7392,8 +7434,8 @@ export namespace Prisma {
     dishId?: SortOrder
     categoryId?: SortOrder
     createdAt?: SortOrder
-    dish?: DishOrderByWithRelationInput
     category?: CategoryOrderByWithRelationInput
+    dish?: DishOrderByWithRelationInput
   }
 
   export type DishCategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -7405,8 +7447,8 @@ export namespace Prisma {
     dishId?: StringFilter<"DishCategory"> | string
     categoryId?: StringFilter<"DishCategory"> | string
     createdAt?: DateTimeFilter<"DishCategory"> | Date | string
-    dish?: XOR<DishScalarRelationFilter, DishWhereInput>
     category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+    dish?: XOR<DishScalarRelationFilter, DishWhereInput>
   }, "id" | "dishId_categoryId">
 
   export type DishCategoryOrderByWithAggregationInput = {
@@ -7524,9 +7566,9 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    owner: UserCreateNestedOneWithoutRestaurantsInput
     categories?: CategoryCreateNestedManyWithoutRestaurantInput
     dishes?: DishCreateNestedManyWithoutRestaurantInput
+    owner: UserCreateNestedOneWithoutRestaurantsInput
   }
 
   export type RestaurantUncheckedCreateInput = {
@@ -7548,9 +7590,9 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    owner?: UserUpdateOneRequiredWithoutRestaurantsNestedInput
     categories?: CategoryUpdateManyWithoutRestaurantNestedInput
     dishes?: DishUpdateManyWithoutRestaurantNestedInput
+    owner?: UserUpdateOneRequiredWithoutRestaurantsNestedInput
   }
 
   export type RestaurantUncheckedUpdateInput = {
@@ -7659,6 +7701,8 @@ export namespace Prisma {
     description: string
     image?: string | null
     spiceLevel?: number | null
+    price?: number | null
+    isVeg?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     restaurant: RestaurantCreateNestedOneWithoutDishesInput
@@ -7671,6 +7715,8 @@ export namespace Prisma {
     description: string
     image?: string | null
     spiceLevel?: number | null
+    price?: number | null
+    isVeg?: boolean | null
     restaurantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7683,6 +7729,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    isVeg?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     restaurant?: RestaurantUpdateOneRequiredWithoutDishesNestedInput
@@ -7695,6 +7743,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    isVeg?: NullableBoolFieldUpdateOperationsInput | boolean | null
     restaurantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7707,6 +7757,8 @@ export namespace Prisma {
     description: string
     image?: string | null
     spiceLevel?: number | null
+    price?: number | null
+    isVeg?: boolean | null
     restaurantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7718,6 +7770,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    isVeg?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -7728,6 +7782,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    isVeg?: NullableBoolFieldUpdateOperationsInput | boolean | null
     restaurantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7736,8 +7792,8 @@ export namespace Prisma {
   export type DishCategoryCreateInput = {
     id?: string
     createdAt?: Date | string
-    dish: DishCreateNestedOneWithoutCategoriesInput
     category: CategoryCreateNestedOneWithoutDishesInput
+    dish: DishCreateNestedOneWithoutCategoriesInput
   }
 
   export type DishCategoryUncheckedCreateInput = {
@@ -7750,8 +7806,8 @@ export namespace Prisma {
   export type DishCategoryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    dish?: DishUpdateOneRequiredWithoutCategoriesNestedInput
     category?: CategoryUpdateOneRequiredWithoutDishesNestedInput
+    dish?: DishUpdateOneRequiredWithoutCategoriesNestedInput
   }
 
   export type DishCategoryUncheckedUpdateInput = {
@@ -7960,11 +8016,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
   export type CategoryListRelationFilter = {
     every?: CategoryWhereInput
     some?: CategoryWhereInput
@@ -7975,6 +8026,11 @@ export namespace Prisma {
     every?: DishWhereInput
     some?: DishWhereInput
     none?: DishWhereInput
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
   }
 
   export type CategoryOrderByRelationAggregateInput = {
@@ -8070,12 +8126,30 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type DishCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     image?: SortOrder
     spiceLevel?: SortOrder
+    price?: SortOrder
+    isVeg?: SortOrder
     restaurantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8083,6 +8157,7 @@ export namespace Prisma {
 
   export type DishAvgOrderByAggregateInput = {
     spiceLevel?: SortOrder
+    price?: SortOrder
   }
 
   export type DishMaxOrderByAggregateInput = {
@@ -8091,6 +8166,8 @@ export namespace Prisma {
     description?: SortOrder
     image?: SortOrder
     spiceLevel?: SortOrder
+    price?: SortOrder
+    isVeg?: SortOrder
     restaurantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8102,6 +8179,8 @@ export namespace Prisma {
     description?: SortOrder
     image?: SortOrder
     spiceLevel?: SortOrder
+    price?: SortOrder
+    isVeg?: SortOrder
     restaurantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8109,6 +8188,7 @@ export namespace Prisma {
 
   export type DishSumOrderByAggregateInput = {
     spiceLevel?: SortOrder
+    price?: SortOrder
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -8127,14 +8207,38 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
-  export type DishScalarRelationFilter = {
-    is?: DishWhereInput
-    isNot?: DishWhereInput
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type CategoryScalarRelationFilter = {
     is?: CategoryWhereInput
     isNot?: CategoryWhereInput
+  }
+
+  export type DishScalarRelationFilter = {
+    is?: DishWhereInput
+    isNot?: DishWhereInput
   }
 
   export type DishCategoryDishIdCategoryIdCompoundUniqueInput = {
@@ -8225,12 +8329,6 @@ export namespace Prisma {
     deleteMany?: RestaurantScalarWhereInput | RestaurantScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutRestaurantsInput = {
-    create?: XOR<UserCreateWithoutRestaurantsInput, UserUncheckedCreateWithoutRestaurantsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutRestaurantsInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type CategoryCreateNestedManyWithoutRestaurantInput = {
     create?: XOR<CategoryCreateWithoutRestaurantInput, CategoryUncheckedCreateWithoutRestaurantInput> | CategoryCreateWithoutRestaurantInput[] | CategoryUncheckedCreateWithoutRestaurantInput[]
     connectOrCreate?: CategoryCreateOrConnectWithoutRestaurantInput | CategoryCreateOrConnectWithoutRestaurantInput[]
@@ -8245,6 +8343,12 @@ export namespace Prisma {
     connect?: DishWhereUniqueInput | DishWhereUniqueInput[]
   }
 
+  export type UserCreateNestedOneWithoutRestaurantsInput = {
+    create?: XOR<UserCreateWithoutRestaurantsInput, UserUncheckedCreateWithoutRestaurantsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRestaurantsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type CategoryUncheckedCreateNestedManyWithoutRestaurantInput = {
     create?: XOR<CategoryCreateWithoutRestaurantInput, CategoryUncheckedCreateWithoutRestaurantInput> | CategoryCreateWithoutRestaurantInput[] | CategoryUncheckedCreateWithoutRestaurantInput[]
     connectOrCreate?: CategoryCreateOrConnectWithoutRestaurantInput | CategoryCreateOrConnectWithoutRestaurantInput[]
@@ -8257,14 +8361,6 @@ export namespace Prisma {
     connectOrCreate?: DishCreateOrConnectWithoutRestaurantInput | DishCreateOrConnectWithoutRestaurantInput[]
     createMany?: DishCreateManyRestaurantInputEnvelope
     connect?: DishWhereUniqueInput | DishWhereUniqueInput[]
-  }
-
-  export type UserUpdateOneRequiredWithoutRestaurantsNestedInput = {
-    create?: XOR<UserCreateWithoutRestaurantsInput, UserUncheckedCreateWithoutRestaurantsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutRestaurantsInput
-    upsert?: UserUpsertWithoutRestaurantsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRestaurantsInput, UserUpdateWithoutRestaurantsInput>, UserUncheckedUpdateWithoutRestaurantsInput>
   }
 
   export type CategoryUpdateManyWithoutRestaurantNestedInput = {
@@ -8293,6 +8389,14 @@ export namespace Prisma {
     update?: DishUpdateWithWhereUniqueWithoutRestaurantInput | DishUpdateWithWhereUniqueWithoutRestaurantInput[]
     updateMany?: DishUpdateManyWithWhereWithoutRestaurantInput | DishUpdateManyWithWhereWithoutRestaurantInput[]
     deleteMany?: DishScalarWhereInput | DishScalarWhereInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutRestaurantsNestedInput = {
+    create?: XOR<UserCreateWithoutRestaurantsInput, UserUncheckedCreateWithoutRestaurantsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRestaurantsInput
+    upsert?: UserUpsertWithoutRestaurantsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRestaurantsInput, UserUpdateWithoutRestaurantsInput>, UserUncheckedUpdateWithoutRestaurantsInput>
   }
 
   export type CategoryUncheckedUpdateManyWithoutRestaurantNestedInput = {
@@ -8407,6 +8511,18 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
   export type RestaurantUpdateOneRequiredWithoutDishesNestedInput = {
     create?: XOR<RestaurantCreateWithoutDishesInput, RestaurantUncheckedCreateWithoutDishesInput>
     connectOrCreate?: RestaurantCreateOrConnectWithoutDishesInput
@@ -8443,24 +8559,16 @@ export namespace Prisma {
     deleteMany?: DishCategoryScalarWhereInput | DishCategoryScalarWhereInput[]
   }
 
-  export type DishCreateNestedOneWithoutCategoriesInput = {
-    create?: XOR<DishCreateWithoutCategoriesInput, DishUncheckedCreateWithoutCategoriesInput>
-    connectOrCreate?: DishCreateOrConnectWithoutCategoriesInput
-    connect?: DishWhereUniqueInput
-  }
-
   export type CategoryCreateNestedOneWithoutDishesInput = {
     create?: XOR<CategoryCreateWithoutDishesInput, CategoryUncheckedCreateWithoutDishesInput>
     connectOrCreate?: CategoryCreateOrConnectWithoutDishesInput
     connect?: CategoryWhereUniqueInput
   }
 
-  export type DishUpdateOneRequiredWithoutCategoriesNestedInput = {
+  export type DishCreateNestedOneWithoutCategoriesInput = {
     create?: XOR<DishCreateWithoutCategoriesInput, DishUncheckedCreateWithoutCategoriesInput>
     connectOrCreate?: DishCreateOrConnectWithoutCategoriesInput
-    upsert?: DishUpsertWithoutCategoriesInput
     connect?: DishWhereUniqueInput
-    update?: XOR<XOR<DishUpdateToOneWithWhereWithoutCategoriesInput, DishUpdateWithoutCategoriesInput>, DishUncheckedUpdateWithoutCategoriesInput>
   }
 
   export type CategoryUpdateOneRequiredWithoutDishesNestedInput = {
@@ -8469,6 +8577,14 @@ export namespace Prisma {
     upsert?: CategoryUpsertWithoutDishesInput
     connect?: CategoryWhereUniqueInput
     update?: XOR<XOR<CategoryUpdateToOneWithWhereWithoutDishesInput, CategoryUpdateWithoutDishesInput>, CategoryUncheckedUpdateWithoutDishesInput>
+  }
+
+  export type DishUpdateOneRequiredWithoutCategoriesNestedInput = {
+    create?: XOR<DishCreateWithoutCategoriesInput, DishUncheckedCreateWithoutCategoriesInput>
+    connectOrCreate?: DishCreateOrConnectWithoutCategoriesInput
+    upsert?: DishUpsertWithoutCategoriesInput
+    connect?: DishWhereUniqueInput
+    update?: XOR<XOR<DishUpdateToOneWithWhereWithoutCategoriesInput, DishUpdateWithoutCategoriesInput>, DishUncheckedUpdateWithoutCategoriesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -8618,6 +8734,22 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -8634,7 +8766,7 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
     notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -8642,7 +8774,20 @@ export namespace Prisma {
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type RestaurantCreateWithoutOwnerInput = {
@@ -8706,35 +8851,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Restaurant"> | Date | string
   }
 
-  export type UserCreateWithoutRestaurantsInput = {
-    id?: string
-    email: string
-    name: string
-    country: string
-    emailVerified?: boolean
-    verificationCode?: string | null
-    verificationCodeExpires?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type UserUncheckedCreateWithoutRestaurantsInput = {
-    id?: string
-    email: string
-    name: string
-    country: string
-    emailVerified?: boolean
-    verificationCode?: string | null
-    verificationCodeExpires?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type UserCreateOrConnectWithoutRestaurantsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutRestaurantsInput, UserUncheckedCreateWithoutRestaurantsInput>
-  }
-
   export type CategoryCreateWithoutRestaurantInput = {
     id?: string
     name: string
@@ -8767,6 +8883,8 @@ export namespace Prisma {
     description: string
     image?: string | null
     spiceLevel?: number | null
+    price?: number | null
+    isVeg?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: DishCategoryCreateNestedManyWithoutDishInput
@@ -8778,6 +8896,8 @@ export namespace Prisma {
     description: string
     image?: string | null
     spiceLevel?: number | null
+    price?: number | null
+    isVeg?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: DishCategoryUncheckedCreateNestedManyWithoutDishInput
@@ -8793,39 +8913,33 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserUpsertWithoutRestaurantsInput = {
-    update: XOR<UserUpdateWithoutRestaurantsInput, UserUncheckedUpdateWithoutRestaurantsInput>
+  export type UserCreateWithoutRestaurantsInput = {
+    id?: string
+    email: string
+    name: string
+    country: string
+    emailVerified?: boolean
+    verificationCode?: string | null
+    verificationCodeExpires?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserUncheckedCreateWithoutRestaurantsInput = {
+    id?: string
+    email: string
+    name: string
+    country: string
+    emailVerified?: boolean
+    verificationCode?: string | null
+    verificationCodeExpires?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserCreateOrConnectWithoutRestaurantsInput = {
+    where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutRestaurantsInput, UserUncheckedCreateWithoutRestaurantsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutRestaurantsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutRestaurantsInput, UserUncheckedUpdateWithoutRestaurantsInput>
-  }
-
-  export type UserUpdateWithoutRestaurantsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UserUncheckedUpdateWithoutRestaurantsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    emailVerified?: BoolFieldUpdateOperationsInput | boolean
-    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryUpsertWithWhereUniqueWithoutRestaurantInput = {
@@ -8880,9 +8994,46 @@ export namespace Prisma {
     description?: StringFilter<"Dish"> | string
     image?: StringNullableFilter<"Dish"> | string | null
     spiceLevel?: IntNullableFilter<"Dish"> | number | null
+    price?: FloatNullableFilter<"Dish"> | number | null
+    isVeg?: BoolNullableFilter<"Dish"> | boolean | null
     restaurantId?: StringFilter<"Dish"> | string
     createdAt?: DateTimeFilter<"Dish"> | Date | string
     updatedAt?: DateTimeFilter<"Dish"> | Date | string
+  }
+
+  export type UserUpsertWithoutRestaurantsInput = {
+    update: XOR<UserUpdateWithoutRestaurantsInput, UserUncheckedUpdateWithoutRestaurantsInput>
+    create: XOR<UserCreateWithoutRestaurantsInput, UserUncheckedCreateWithoutRestaurantsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRestaurantsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRestaurantsInput, UserUncheckedUpdateWithoutRestaurantsInput>
+  }
+
+  export type UserUpdateWithoutRestaurantsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUncheckedUpdateWithoutRestaurantsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationCode?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationCodeExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RestaurantCreateWithoutCategoriesInput = {
@@ -8892,8 +9043,8 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    owner: UserCreateNestedOneWithoutRestaurantsInput
     dishes?: DishCreateNestedManyWithoutRestaurantInput
+    owner: UserCreateNestedOneWithoutRestaurantsInput
   }
 
   export type RestaurantUncheckedCreateWithoutCategoriesInput = {
@@ -8952,8 +9103,8 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    owner?: UserUpdateOneRequiredWithoutRestaurantsNestedInput
     dishes?: DishUpdateManyWithoutRestaurantNestedInput
+    owner?: UserUpdateOneRequiredWithoutRestaurantsNestedInput
   }
 
   export type RestaurantUncheckedUpdateWithoutCategoriesInput = {
@@ -9000,8 +9151,8 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    owner: UserCreateNestedOneWithoutRestaurantsInput
     categories?: CategoryCreateNestedManyWithoutRestaurantInput
+    owner: UserCreateNestedOneWithoutRestaurantsInput
   }
 
   export type RestaurantUncheckedCreateWithoutDishesInput = {
@@ -9060,8 +9211,8 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    owner?: UserUpdateOneRequiredWithoutRestaurantsNestedInput
     categories?: CategoryUpdateManyWithoutRestaurantNestedInput
+    owner?: UserUpdateOneRequiredWithoutRestaurantsNestedInput
   }
 
   export type RestaurantUncheckedUpdateWithoutDishesInput = {
@@ -9091,33 +9242,6 @@ export namespace Prisma {
     data: XOR<DishCategoryUpdateManyMutationInput, DishCategoryUncheckedUpdateManyWithoutDishInput>
   }
 
-  export type DishCreateWithoutCategoriesInput = {
-    id?: string
-    name: string
-    description: string
-    image?: string | null
-    spiceLevel?: number | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    restaurant: RestaurantCreateNestedOneWithoutDishesInput
-  }
-
-  export type DishUncheckedCreateWithoutCategoriesInput = {
-    id?: string
-    name: string
-    description: string
-    image?: string | null
-    spiceLevel?: number | null
-    restaurantId: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type DishCreateOrConnectWithoutCategoriesInput = {
-    where: DishWhereUniqueInput
-    create: XOR<DishCreateWithoutCategoriesInput, DishUncheckedCreateWithoutCategoriesInput>
-  }
-
   export type CategoryCreateWithoutDishesInput = {
     id?: string
     name: string
@@ -9139,37 +9263,35 @@ export namespace Prisma {
     create: XOR<CategoryCreateWithoutDishesInput, CategoryUncheckedCreateWithoutDishesInput>
   }
 
-  export type DishUpsertWithoutCategoriesInput = {
-    update: XOR<DishUpdateWithoutCategoriesInput, DishUncheckedUpdateWithoutCategoriesInput>
+  export type DishCreateWithoutCategoriesInput = {
+    id?: string
+    name: string
+    description: string
+    image?: string | null
+    spiceLevel?: number | null
+    price?: number | null
+    isVeg?: boolean | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    restaurant: RestaurantCreateNestedOneWithoutDishesInput
+  }
+
+  export type DishUncheckedCreateWithoutCategoriesInput = {
+    id?: string
+    name: string
+    description: string
+    image?: string | null
+    spiceLevel?: number | null
+    price?: number | null
+    isVeg?: boolean | null
+    restaurantId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DishCreateOrConnectWithoutCategoriesInput = {
+    where: DishWhereUniqueInput
     create: XOR<DishCreateWithoutCategoriesInput, DishUncheckedCreateWithoutCategoriesInput>
-    where?: DishWhereInput
-  }
-
-  export type DishUpdateToOneWithWhereWithoutCategoriesInput = {
-    where?: DishWhereInput
-    data: XOR<DishUpdateWithoutCategoriesInput, DishUncheckedUpdateWithoutCategoriesInput>
-  }
-
-  export type DishUpdateWithoutCategoriesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    restaurant?: RestaurantUpdateOneRequiredWithoutDishesNestedInput
-  }
-
-  export type DishUncheckedUpdateWithoutCategoriesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
-    restaurantId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryUpsertWithoutDishesInput = {
@@ -9194,6 +9316,43 @@ export namespace Prisma {
   export type CategoryUncheckedUpdateWithoutDishesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    restaurantId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DishUpsertWithoutCategoriesInput = {
+    update: XOR<DishUpdateWithoutCategoriesInput, DishUncheckedUpdateWithoutCategoriesInput>
+    create: XOR<DishCreateWithoutCategoriesInput, DishUncheckedCreateWithoutCategoriesInput>
+    where?: DishWhereInput
+  }
+
+  export type DishUpdateToOneWithWhereWithoutCategoriesInput = {
+    where?: DishWhereInput
+    data: XOR<DishUpdateWithoutCategoriesInput, DishUncheckedUpdateWithoutCategoriesInput>
+  }
+
+  export type DishUpdateWithoutCategoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    isVeg?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    restaurant?: RestaurantUpdateOneRequiredWithoutDishesNestedInput
+  }
+
+  export type DishUncheckedUpdateWithoutCategoriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    isVeg?: NullableBoolFieldUpdateOperationsInput | boolean | null
     restaurantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9252,6 +9411,8 @@ export namespace Prisma {
     description: string
     image?: string | null
     spiceLevel?: number | null
+    price?: number | null
+    isVeg?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9285,6 +9446,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    isVeg?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: DishCategoryUpdateManyWithoutDishNestedInput
@@ -9296,6 +9459,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    isVeg?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: DishCategoryUncheckedUpdateManyWithoutDishNestedInput
@@ -9307,6 +9472,8 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
     spiceLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: NullableFloatFieldUpdateOperationsInput | number | null
+    isVeg?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

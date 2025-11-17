@@ -157,6 +157,8 @@ exports.Prisma.DishScalarFieldEnum = {
   description: 'description',
   image: 'image',
   spiceLevel: 'spiceLevel',
+  price: 'price',
+  isVeg: 'isVeg',
   restaurantId: 'restaurantId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -11,6 +11,8 @@ export const dishRouter = createTRPCRouter({
         name: z.string().min(1, "Dish name is required"),
         description: z.string().min(1, "Description is required"),
         image: z.string().optional().nullable(),
+        price: z.number().optional().nullable(),
+        isVeg: z.boolean().optional().nullable(),
         spiceLevel: z.number().int().min(1).max(5).optional().nullable(),
         categoryIds: z.array(z.string()).optional().default([]),
       }),
@@ -52,6 +54,8 @@ export const dishRouter = createTRPCRouter({
           name: input.name,
           description: input.description,
           image: input.image ?? null,
+          price: input.price ?? null,
+          isVeg: input.isVeg ?? null,
           spiceLevel: input.spiceLevel ?? null,
           restaurantId: input.restaurantId,
           categories: {
@@ -145,6 +149,8 @@ export const dishRouter = createTRPCRouter({
         id: z.string(),
         name: z.string().min(1).optional(),
         description: z.string().min(1).optional(),
+        price: z.number().optional().nullable(),
+        isVeg: z.boolean().optional().nullable(),
         image: z.string().optional().nullable(),
         spiceLevel: z.number().int().min(1).max(5).optional().nullable(),
         categoryIds: z.array(z.string()).optional(),
@@ -192,12 +198,16 @@ export const dishRouter = createTRPCRouter({
         description?: string;
         image?: string | null;
         spiceLevel?: number | null;
+        price?: number | null;
+        isVeg?: boolean | null;
       } = {};
 
       if (updateData.name !== undefined) dataToUpdate.name = updateData.name;
       if (updateData.description !== undefined) dataToUpdate.description = updateData.description;
       if (updateData.image !== undefined) dataToUpdate.image = updateData.image;
       if (updateData.spiceLevel !== undefined) dataToUpdate.spiceLevel = updateData.spiceLevel;
+      if (updateData.price !== undefined) dataToUpdate.price = updateData.price;
+      if (updateData.isVeg !== undefined) dataToUpdate.isVeg = updateData.isVeg;
 
       const dish = await ctx.db.dish.update({
         where: { id },

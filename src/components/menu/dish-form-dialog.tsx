@@ -40,6 +40,8 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
 
+  const [price, setPrice] = useState<string>("");
+  const [isVeg, setIsVeg] = useState<boolean | null>(null);
   const [spiceLevel, setSpiceLevel] = useState<string>("0");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [errors, setErrors] = useState<{
@@ -79,7 +81,9 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
       setName(dish.name);
       setDescription(dish.description);
       setImage(dish.image ?? "");
-      setSpiceLevel(dish.spiceLevel?.toString() ?? "0"); 
+      setPrice(dish.price != null ? String(dish.price) : "");
+      setIsVeg(dish.isVeg === true ? true : dish.isVeg === false ? false : null);
+      setSpiceLevel(dish.spiceLevel?.toString() ?? "0");
       setSelectedCategories(dish.categories.map((c) => c.id));
     } else {
       reset();
@@ -92,17 +96,24 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
     setDescription("");
     setImage("");
     setSpiceLevel("0");
+    setPrice("");
+    setIsVeg(null);
     setSelectedCategories([]);
     setErrors({});
   };
 
   const validate = () => {
-    const newErrors: { name?: string; description?: string } = {};
+    const newErrors: { name?: string; description?: string; price?: string } = {};
     if (!name.trim()) {
       newErrors.name = "Dish name is required";
     }
     if (!description.trim()) {
       newErrors.description = "Description is required";
+    }
+    if (price !== "" && Number.isNaN(Number(price))) {
+      newErrors.price = "Price must be a number";
+    } else if (price !== "" && Number(price) < 0) {
+      newErrors.price = "Price cannot be negative";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -125,6 +136,8 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
       description: description.trim(),
       image: image.trim() || null,
       spiceLevel: spice,
+      price: price !== "" ? parseFloat(price) : null,
+      isVeg: isVeg ?? null,
       categoryIds: selectedCategories,
     };
 
@@ -209,6 +222,53 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
                 </span>
               </FieldDescription>
             </Field>
+            <Field>
+              <FieldLabel htmlFor="price">Price (₹)</FieldLabel>
+              <Input
+                id="price"
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="e.g., 199.00"
+                disabled={createMutation.isPending || updateMutation.isPending}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel>Vegetarian</FieldLabel>
+              <div className="flex items-center gap-3">
+                <label className="flex cursor-pointer items-center gap-2 select-none">
+                  <Checkbox
+                    checked={isVeg === true}
+                    onCheckedChange={(v) => setIsVeg(Boolean(v))}
+                    disabled={createMutation.isPending || updateMutation.isPending}
+                  />
+                  <span className="text-sm">Veg</span>
+                </label>
+
+                <label className="flex cursor-pointer items-center gap-2 select-none">
+                  <Checkbox
+                    checked={isVeg === false}
+                    onCheckedChange={(v) => setIsVeg(v ? false : null)}
+                    disabled={createMutation.isPending || updateMutation.isPending}
+                  />
+                  <span className="text-sm">Non-Veg</span>
+                </label>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsVeg(null)}
+                  disabled={createMutation.isPending || updateMutation.isPending}
+                >
+                  Clear
+                </Button>
+              </div>
+              <FieldDescription>Mark whether this dish is vegetarian or not.</FieldDescription>
+            </Field>
+
             <Field>
               <FieldLabel htmlFor="spiceLevel">Spice Level</FieldLabel>
               <Select

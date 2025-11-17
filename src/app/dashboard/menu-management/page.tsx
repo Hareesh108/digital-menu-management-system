@@ -27,7 +27,7 @@ export default function MenuManagementPage() {
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [dishDialogOpen, setDishDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  
+
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
@@ -151,7 +151,7 @@ export default function MenuManagementPage() {
           {selectedRestaurantId && (
             <div className="flex gap-2">
               {activeTab === "categories" && (
-                <Button variant="outline" onClick={handleCreateCategory}>
+                <Button onClick={handleCreateCategory}>
                   <Plus className="h-4 w-4" />
                   Add Category
                 </Button>
@@ -206,7 +206,7 @@ export default function MenuManagementPage() {
                   <div className="flex flex-col items-center justify-center p-12 text-center">
                     <p className="mb-4 text-muted-foreground">No categories yet. Create your first category!</p>
                     <Button onClick={handleCreateCategory}>
-                      <Plus className="mr-2 h-4 w-4" />
+                      <Plus className="h-4 w-4" />
                       Create Category
                     </Button>
                   </div>
@@ -267,7 +267,7 @@ export default function MenuManagementPage() {
                   <div className="flex flex-col items-center justify-center p-12 text-center">
                     <p className="mb-4 text-muted-foreground">No dishes yet. Create your first dish!</p>
                     <Button onClick={handleCreateDish}>
-                      <Plus className="mr-2 h-4 w-4" />
+                      <Plus className="h-4 w-4" />
                       Create Dish
                     </Button>
                   </div>
@@ -278,8 +278,9 @@ export default function MenuManagementPage() {
                         <TableHead>Name</TableHead>
                         <TableHead>Description</TableHead>
                         <TableHead>Spice Level</TableHead>
+                        <TableHead>Price</TableHead>
                         <TableHead>Categories</TableHead>
-                        <TableHead className="text-center">Actions</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -294,6 +295,7 @@ export default function MenuManagementPage() {
                               <span className="text-sm text-muted-foreground">-</span>
                             )}
                           </TableCell>
+                          <TableCell className="max-w-md truncate">{dish.price ?? "-"}</TableCell>
                           <TableCell>
                             <div className="flex flex-wrap gap-1">
                               {dish.categories.length > 0 ? (

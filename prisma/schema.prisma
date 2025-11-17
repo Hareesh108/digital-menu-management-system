@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
     output   = "../generated/prisma"
@@ -30,13 +27,13 @@ model Restaurant {
     id         String     @id @default(cuid())
     name       String
     location   String
-    slug       String     @unique // For QR code and shared links (e.g., /menu/{slug})
+    slug       String     @unique
     ownerId    String
-    owner      User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-    categories Category[]
-    dishes     Dish[]
     createdAt  DateTime   @default(now())
     updatedAt  DateTime   @updatedAt
+    categories Category[]
+    dishes     Dish[]
+    owner      User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
     @@index([ownerId])
     @@index([slug])
@@ -46,12 +43,12 @@ model Category {
     id           String         @id @default(cuid())
     name         String
     restaurantId String
-    restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-    dishes       DishCategory[]
     createdAt    DateTime       @default(now())
     updatedAt    DateTime       @updatedAt
+    restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+    dishes       DishCategory[]
 
-    @@unique([restaurantId, name]) // Unique category name per restaurant
+    @@unique([restaurantId, name])
     @@index([restaurantId])
 }
 
@@ -59,13 +56,15 @@ model Dish {
     id           String         @id @default(cuid())
     name         String
     description  String
-    image        String?        // URL or path to image
-    spiceLevel   Int?           // Optional spice level (e.g., 1-5)
+    image        String?
+    spiceLevel   Int?
+    price        Float? 
+    isVeg        Boolean?
     restaurantId String
-    restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-    categories   DishCategory[]
     createdAt    DateTime       @default(now())
     updatedAt    DateTime       @updatedAt
+    restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+    categories   DishCategory[]
 
     @@index([restaurantId])
 }
@@ -74,11 +73,11 @@ model DishCategory {
     id         String   @id @default(cuid())
     dishId     String
     categoryId String
-    dish       Dish     @relation(fields: [dishId], references: [id], onDelete: Cascade)
-    category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
     createdAt  DateTime @default(now())
+    category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+    dish       Dish     @relation(fields: [dishId], references: [id], onDelete: Cascade)
 
-    @@unique([dishId, categoryId]) // A dish can't be in the same category twice
+    @@unique([dishId, categoryId])
     @@index([dishId])
     @@index([categoryId])
 }

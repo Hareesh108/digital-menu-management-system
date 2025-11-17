@@ -20,7 +20,6 @@ export function LogoutButton(props: React.ComponentPropsWithoutRef<typeof Sideba
         localStorage.removeItem("currentUserEmail");
       } catch {}
 
-
       void utils.auth.getSession.invalidate();
       toast.success("Logged out successfully");
 
