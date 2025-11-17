@@ -11,6 +11,7 @@ export default async function MenuPage({ params }: { params: Promise<{ slug: str
   try {
     restaurant = await api.restaurant.getBySlug({ slug });
   } catch (error) {
+    console.log(error);
     notFound();
   }
 

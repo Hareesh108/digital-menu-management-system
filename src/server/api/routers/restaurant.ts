@@ -5,7 +5,6 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/
 
 import type { PrismaClient } from "../../../../generated/prisma";
 
-// Helper function to generate slug from name
 function generateSlug(name: string): string {
   return name
     .toLowerCase()
@@ -15,7 +14,6 @@ function generateSlug(name: string): string {
     .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
 }
 
-// Helper function to ensure unique slug
 async function ensureUniqueSlug(db: PrismaClient, baseSlug: string, excludeId?: string): Promise<string> {
   let slug = baseSlug;
   let counter = 1;
@@ -35,7 +33,6 @@ async function ensureUniqueSlug(db: PrismaClient, baseSlug: string, excludeId?: 
 }
 
 export const restaurantRouter = createTRPCRouter({
-  // Create a new restaurant
   create: protectedProcedure
     .input(
       z.object({
@@ -47,7 +44,6 @@ export const restaurantRouter = createTRPCRouter({
       const baseSlug = generateSlug(input.name);
       const slug = await ensureUniqueSlug(ctx.db, baseSlug);
 
-      // Use the authenticated user's id as the owner. protectedProcedure ensures ctx.session exists.
       const ownerId = ctx.session?.userId;
       if (!ownerId) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to create a restaurant" });
@@ -65,9 +61,7 @@ export const restaurantRouter = createTRPCRouter({
       return restaurant;
     }),
 
-  // Get all restaurants for the current user
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    // Return restaurants owned by the current authenticated user
     const ownerId = ctx.session?.userId;
     if (!ownerId) {
       throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to view restaurants" });
@@ -93,9 +87,7 @@ export const restaurantRouter = createTRPCRouter({
     return restaurants;
   }),
 
-  // Get a single restaurant by ID
   getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
-    // NOTE: Authentication skipped
     const ownerId = ctx.session?.userId;
     if (!ownerId) {
       throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to view this restaurant" });
@@ -137,7 +129,6 @@ export const restaurantRouter = createTRPCRouter({
     return restaurant;
   }),
 
-  // Get restaurant by slug (public access for customer menu view)
   getBySlug: publicProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
     const restaurant = await ctx.db.restaurant.findUnique({
       where: {
@@ -186,7 +177,6 @@ export const restaurantRouter = createTRPCRouter({
       });
     }
 
-    // Transform the data to match the expected structure for the menu view
     const categories = restaurant.categories.map((cat) => ({
       id: cat.id,
       name: cat.name,
@@ -212,7 +202,6 @@ export const restaurantRouter = createTRPCRouter({
     };
   }),
 
-  // Update a restaurant
   update: protectedProcedure
     .input(
       z.object({
@@ -224,8 +213,6 @@ export const restaurantRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, name, location } = input;
 
-      // NOTE: Authentication skipped
-      // Check if restaurant exists
       const ownerId = ctx.session?.userId;
       if (!ownerId) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to update this restaurant" });
@@ -245,7 +232,6 @@ export const restaurantRouter = createTRPCRouter({
         });
       }
 
-      // If name changed, update slug
       let slug = existing.slug;
       if (name && name !== existing.name) {
         const baseSlug = generateSlug(name);
@@ -264,10 +250,7 @@ export const restaurantRouter = createTRPCRouter({
       return restaurant;
     }),
 
-  // Delete a restaurant
   delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    // NOTE: Authentication skipped
-    // Check if restaurant exists
     const ownerId = ctx.session?.userId;
     if (!ownerId) {
       throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to delete this restaurant" });

@@ -166,7 +166,7 @@ export const protectedProcedure = t.procedure.use(timingMiddleware).use(async ({
   return next({
     ctx: {
       ...ctx,
-      session: ctx.session, // now guaranteed by the middleware
+      session: ctx.session,
     },
   });
 });

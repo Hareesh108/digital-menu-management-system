@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -150,7 +151,7 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <FieldGroup>
+          <FieldGroup className="flex flex-col gap-3">
             <Field>
               <FieldLabel htmlFor="name">Dish Name</FieldLabel>
               <Input
@@ -170,7 +171,7 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your dish..."
                 rows={3}
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={createMutation.isPending || updateMutation.isPending}
               />
               {errors.description && (
@@ -179,7 +180,6 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
             </Field>
             <Field>
               <FieldLabel htmlFor="image">Image</FieldLabel>
-
               <Select
                 onValueChange={(value) => setImage(value)}
                 value={image}
@@ -191,14 +191,23 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
 
                 <SelectContent>
                   {FOOD_ITEMS.map((item) => (
-                    <SelectItem key={item.url} value={item.url}>
-                      {item.name}
+                    <SelectItem key={item.url} value={item.url} className="flex items-center gap-2">
+                      <div className="relative h-6 w-6 shrink-0 overflow-hidden rounded-sm">
+                        <Image src={item.url} alt={item.name} fill className="object-cover" sizes="24px" />
+                      </div>
+                      <span>{item.name}</span>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-
-              <FieldDescription>Optional: Choose an image for your dish</FieldDescription>
+              <FieldDescription>
+                Optional: Choose an image for your dish
+                <br />
+                <span className="text-xs text-muted-foreground">
+                  Note: Images are currently selected from a static list. For a dynamic approach, you can allow users to
+                  upload images and store them in a cloud service like S3 storage.
+                </span>
+              </FieldDescription>
             </Field>
             <Field>
               <FieldLabel htmlFor="spiceLevel">Spice Level</FieldLabel>
@@ -249,23 +258,25 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
             </Field>
           </FieldGroup>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={createMutation.isPending || updateMutation.isPending}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
-              {createMutation.isPending || updateMutation.isPending
-                ? isEditing
-                  ? "Updating..."
-                  : "Creating..."
-                : isEditing
-                  ? "Update"
-                  : "Create"}
-            </Button>
+            <div className="mt-2 flex gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={createMutation.isPending || updateMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
+                {createMutation.isPending || updateMutation.isPending
+                  ? isEditing
+                    ? "Updating..."
+                    : "Creating..."
+                  : isEditing
+                    ? "Update"
+                    : "Create"}
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -22,6 +22,8 @@ type CategoryFromList = RouterOutputs["category"]["getAll"][number];
 type DishFromList = RouterOutputs["dish"]["getAll"][number];
 
 export default function MenuManagementPage() {
+  const [activeTab, setActiveTab] = useState("categories");
+
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [dishDialogOpen, setDishDialogOpen] = useState(false);
@@ -148,16 +150,22 @@ export default function MenuManagementPage() {
             <h2 className="text-2xl font-bold tracking-tight">Menu Items</h2>
             <p className="text-muted-foreground">Manage categories and dishes for your restaurant</p>
           </div>
+
           {selectedRestaurantId && (
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleCreateCategory}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Category
-              </Button>
-              <Button onClick={handleCreateDish}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Dish
-              </Button>
+              {activeTab === "categories" && (
+                <Button variant="outline" onClick={handleCreateCategory}>
+                  <Plus className="h-4 w-4" />
+                  Add Category
+                </Button>
+              )}
+
+              {activeTab === "dishes" && (
+                <Button onClick={handleCreateDish}>
+                  <Plus className="h-4 w-4" />
+                  Add Dish
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -183,7 +191,7 @@ export default function MenuManagementPage() {
         </div>
 
         {selectedRestaurantId && (
-          <Tabs defaultValue="categories" className="w-full">
+          <Tabs defaultValue="categories" value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList>
               <TabsTrigger value="categories">Categories</TabsTrigger>
               <TabsTrigger value="dishes">Dishes</TabsTrigger>

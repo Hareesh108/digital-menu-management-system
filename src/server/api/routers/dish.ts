@@ -4,7 +4,6 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const dishRouter = createTRPCRouter({
-  // Create a new dish
   create: protectedProcedure
     .input(
       z.object({
@@ -17,12 +16,9 @@ export const dishRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      // Verify restaurant exists
       const restaurant = await ctx.db.restaurant.findFirst({
         where: {
           id: input.restaurantId,
-          // ownerId: ctx.session?.userId,
         },
       });
 
@@ -33,7 +29,6 @@ export const dishRouter = createTRPCRouter({
         });
       }
 
-      // If category IDs provided, verify they belong to the restaurant
       if (input.categoryIds.length > 0) {
         const categories = await ctx.db.category.findMany({
           where: {
@@ -52,7 +47,6 @@ export const dishRouter = createTRPCRouter({
         }
       }
 
-      // Create dish and connect categories
       const dish = await ctx.db.dish.create({
         data: {
           name: input.name,
@@ -81,14 +75,10 @@ export const dishRouter = createTRPCRouter({
       };
     }),
 
-  // Get all dishes for a restaurant
   getAll: protectedProcedure.input(z.object({ restaurantId: z.string() })).query(async ({ ctx, input }) => {
-    // NOTE: Authentication skipped
-    // Verify restaurant exists
     const restaurant = await ctx.db.restaurant.findFirst({
       where: {
         id: input.restaurantId,
-        // ownerId: ctx.session?.userId,
       },
     });
 
@@ -121,15 +111,10 @@ export const dishRouter = createTRPCRouter({
     }));
   }),
 
-  // Get a single dish by ID
   getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
-    // NOTE: Authentication skipped
     const dish = await ctx.db.dish.findFirst({
       where: {
         id: input.id,
-        // restaurant: {
-        //   ownerId: ctx.session?.userId,
-        // },
       },
       include: {
         restaurant: true,
@@ -154,7 +139,6 @@ export const dishRouter = createTRPCRouter({
     };
   }),
 
-  // Update a dish
   update: protectedProcedure
     .input(
       z.object({
@@ -169,14 +153,9 @@ export const dishRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, categoryIds, ...updateData } = input;
 
-      // NOTE: Authentication skipped
-      // Check if dish exists
       const existing = await ctx.db.dish.findFirst({
         where: {
           id,
-          // restaurant: {
-          //   ownerId: ctx.session?.userId,
-          // },
         },
         include: {
           categories: true,
@@ -190,7 +169,6 @@ export const dishRouter = createTRPCRouter({
         });
       }
 
-      // If category IDs provided, verify they belong to the restaurant
       if (categoryIds !== undefined) {
         const categories = await ctx.db.category.findMany({
           where: {
@@ -209,7 +187,6 @@ export const dishRouter = createTRPCRouter({
         }
       }
 
-      // Prepare update data, handling null values
       const dataToUpdate: {
         name?: string;
         description?: string;
@@ -222,15 +199,13 @@ export const dishRouter = createTRPCRouter({
       if (updateData.image !== undefined) dataToUpdate.image = updateData.image;
       if (updateData.spiceLevel !== undefined) dataToUpdate.spiceLevel = updateData.spiceLevel;
 
-      // Update dish
       const dish = await ctx.db.dish.update({
         where: { id },
         data: {
           ...dataToUpdate,
-          // Update categories if provided
           ...(categoryIds !== undefined && {
             categories: {
-              deleteMany: {}, // Remove all existing category connections
+              deleteMany: {},
               create: categoryIds.map((categoryId) => ({
                 categoryId,
               })),
@@ -252,16 +227,10 @@ export const dishRouter = createTRPCRouter({
       };
     }),
 
-  // Delete a dish
   delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    // NOTE: Authentication skipped
-    // Check if dish exists
     const existing = await ctx.db.dish.findFirst({
       where: {
         id: input.id,
-        // restaurant: {
-        //   ownerId: ctx.session?.userId,
-        // },
       },
     });
 

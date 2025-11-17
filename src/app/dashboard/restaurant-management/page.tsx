@@ -100,7 +100,7 @@ export default function RestaurantManagementPage() {
             <p className="text-muted-foreground">Manage your restaurants and their digital menus</p>
           </div>
           <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="h-4 w-4" />
             Add Restaurant
           </Button>
         </div>

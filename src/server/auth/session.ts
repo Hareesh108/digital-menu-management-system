@@ -33,14 +33,11 @@ export async function createSession(payload: SessionPayload): Promise<string> {
     });
     console.log("[auth] Session cookie set successfully");
   } catch {
-    // If next/headers fails (e.g., in tRPC context), log a note
-    // The token is still returned and can be set by the caller
     console.log(
       "[auth] Note: Setting cookie via next/headers failed (may be in tRPC context), token is returned for client-side handling",
     );
   }
 
-  // Always return the token
   return session;
 }
 

@@ -17,11 +17,11 @@ type Step = "info" | "code";
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
+
   const [step, setStep] = useState<Step>("info");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [country, setCountry] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
 
   const utils = api.useUtils();
   const requestCode = api.auth.requestCode.useMutation({
@@ -37,7 +37,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const verifyCode = api.auth.verifyCode.useMutation({
     onSuccess: async (data) => {
       toast.success("Account created successfully!");
-      // If server returned a sessionToken, set it as a cookie (fallback for when server-side setting failed)
       if (data.sessionToken) {
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
         document.cookie = `session-token=${data.sessionToken}; expires=${expiresAt.toUTCString()}; path=/; SameSite=Lax`;
@@ -47,7 +46,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
     onError: (error) => {
       toast.error(error.message || "Invalid verification code");
-      setVerificationCode("");
     },
   });
 
@@ -61,7 +59,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   };
 
   const handleCodeComplete = (code: string) => {
-    setVerificationCode(code);
     verifyCode.mutate({ email, code });
   };
 
@@ -142,16 +139,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
             </Field>
 
             <div className="flex flex-col gap-2">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setStep("info");
-                  setVerificationCode("");
-                }}
-                disabled={verifyCode.isPending}
-              >
-                Change Information
-              </Button>
               <Button
                 variant="ghost"
                 onClick={() => {

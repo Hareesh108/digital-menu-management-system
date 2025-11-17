@@ -4,7 +4,6 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const categoryRouter = createTRPCRouter({
-  // Create a new category
   create: protectedProcedure
     .input(
       z.object({
@@ -13,12 +12,9 @@ export const categoryRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // NOTE: Authentication skipped
-      // Verify restaurant exists
       const restaurant = await ctx.db.restaurant.findFirst({
         where: {
           id: input.restaurantId,
-          // ownerId: ctx.session?.userId,
         },
       });
 
@@ -29,7 +25,6 @@ export const categoryRouter = createTRPCRouter({
         });
       }
 
-      // Check if category with same name already exists in this restaurant
       const existing = await ctx.db.category.findUnique({
         where: {
           restaurantId_name: {
@@ -56,14 +51,10 @@ export const categoryRouter = createTRPCRouter({
       return category;
     }),
 
-  // Get all categories for a restaurant
   getAll: protectedProcedure.input(z.object({ restaurantId: z.string() })).query(async ({ ctx, input }) => {
-    // NOTE: Authentication skipped
-    // Verify restaurant exists
     const restaurant = await ctx.db.restaurant.findFirst({
       where: {
         id: input.restaurantId,
-        // ownerId: ctx.session?.userId,
       },
     });
 
@@ -93,15 +84,10 @@ export const categoryRouter = createTRPCRouter({
     return categories;
   }),
 
-  // Get a single category by ID
   getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
-    // NOTE: Authentication skipped
     const category = await ctx.db.category.findFirst({
       where: {
         id: input.id,
-        // restaurant: {
-        //   ownerId: ctx.session?.userId,
-        // },
       },
       include: {
         restaurant: true,
@@ -123,7 +109,6 @@ export const categoryRouter = createTRPCRouter({
     return category;
   }),
 
-  // Update a category
   update: protectedProcedure
     .input(
       z.object({
@@ -134,14 +119,9 @@ export const categoryRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, name } = input;
 
-      // NOTE: Authentication skipped
-      // Check if category exists
       const existing = await ctx.db.category.findFirst({
         where: {
           id,
-          // restaurant: {
-          //   ownerId: ctx.session?.userId,
-          // },
         },
       });
 
@@ -152,7 +132,6 @@ export const categoryRouter = createTRPCRouter({
         });
       }
 
-      // If name changed, check for conflicts
       if (name && name !== existing.name) {
         const conflict = await ctx.db.category.findUnique({
           where: {
@@ -181,16 +160,10 @@ export const categoryRouter = createTRPCRouter({
       return category;
     }),
 
-  // Delete a category
   delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    // NOTE: Authentication skipped
-    // Check if category exists
     const existing = await ctx.db.category.findFirst({
       where: {
         id: input.id,
-        // restaurant: {
-        //   ownerId: ctx.session?.userId,
-        // },
       },
     });
 

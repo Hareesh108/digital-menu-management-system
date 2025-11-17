@@ -66,23 +66,23 @@ export function QRCodeDialog({ open, onOpenChange, url, restaurantName }: QRCode
         </DialogHeader>
         <div className="flex flex-col items-center gap-4 py-4">
           {qrCodeDataUrl ? (
-            <div>
+            <div className="flex flex-col gap-4">
               <div className="rounded-lg border bg-white p-4">
                 <Image src={qrCodeDataUrl} alt="QR Code" width={256} height={256} />
               </div>
 
               <div className="flex w-full flex-col gap-2">
                 <div className="flex items-center gap-2 rounded-md bg-muted p-2">
-                  <span className="flex-1 truncate text-sm">{url}</span>
+                  <span className="max-w-60 flex-1 truncate text-sm">{url}</span>
                   <Button variant="ghost" size="icon" onClick={handleCopyLink} className="shrink-0">
                     <Copy className="h-4 w-4" />
                   </Button>
                 </div>
-                <Button onClick={handleDownload} variant="outline" className="w-full">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download QR Code
-                </Button>
               </div>
+              <Button onClick={handleDownload} variant="outline" className="w-full">
+                <Download className="mr-2 h-4 w-4" />
+                Download QR Code
+              </Button>
             </div>
           ) : (
             <div className="flex h-64 items-center justify-center">

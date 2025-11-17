@@ -9,18 +9,13 @@ export function generateVerificationCode(): string {
 
 /**
  * Sends a verification code email to the user
- * For production, you should use a proper email service like Resend, SendGrid, etc.
  */
 export async function sendVerificationEmail(email: string, code: string): Promise<void> {
-  // If a dedicated email provider is configured (Resend or SMTP) use it.
-  // This ensures you actually receive the email even in development when testing against a real provider.
   if (env.RESEND_API_KEY) {
     await sendWithResend(email, code);
   } else if (env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASSWORD) {
     await sendWithSMTP(email, code);
   } else {
-    // No email service configured — fall back to logging the code. This is useful for local development
-    // when you don't want to configure Resend/SMTP.
     console.log(`📧 Verification code for ${email}: ${code}`);
     console.warn("⚠️  No email service configured. Verification code logged above.");
   }
@@ -28,7 +23,6 @@ export async function sendVerificationEmail(email: string, code: string): Promis
 
 async function sendWithResend(email: string, code: string): Promise<void> {
   try {
-    // Dynamic import for Resend to avoid requiring it if not used
     const { Resend } = await import("resend");
     const resend = new Resend(env.RESEND_API_KEY);
 
@@ -56,7 +50,6 @@ async function sendWithResend(email: string, code: string): Promise<void> {
 
 async function sendWithSMTP(email: string, code: string): Promise<void> {
   try {
-    // Dynamic import for nodemailer
     const nodemailer = await import("nodemailer");
 
     const transporter = nodemailer.createTransport({

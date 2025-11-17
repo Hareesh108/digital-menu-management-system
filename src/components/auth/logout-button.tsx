@@ -16,7 +16,7 @@ export function LogoutButton(props: React.ComponentPropsWithoutRef<typeof Sideba
     onSuccess: () => {
       // Clear session cookie from client side
       document.cookie = "session-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      
+
       // Clear localStorage
       try {
         localStorage.removeItem("currentUserEmail");
@@ -25,7 +25,7 @@ export function LogoutButton(props: React.ComponentPropsWithoutRef<typeof Sideba
       // Invalidate cache and show success message
       void utils.auth.getSession.invalidate();
       toast.success("Logged out successfully");
-      
+
       // Redirect to login
       router.push("/login");
     },
@@ -47,11 +47,7 @@ export function LogoutButton(props: React.ComponentPropsWithoutRef<typeof Sideba
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
-        <SidebarMenuButton 
-          onClick={handleLogout} 
-          className="cursor-pointer"
-          disabled={logoutMutation.isPending}
-        >
+        <SidebarMenuButton onClick={handleLogout} className="cursor-pointer" disabled={logoutMutation.isPending}>
           <IconLogout />
           {logoutMutation.isPending ? "Logging out..." : "Log out"}
         </SidebarMenuButton>

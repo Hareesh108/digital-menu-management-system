@@ -19,9 +19,9 @@ type Step = "email" | "code";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
+
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
 
   const utils = api.useUtils();
   const requestCode = api.auth.requestCode.useMutation({
@@ -37,7 +37,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   const verifyCode = api.auth.verifyCode.useMutation({
     onSuccess: async (data) => {
       toast.success("Login successful!");
-      // If server returned a sessionToken, set it as a cookie (fallback for when server-side setting failed)
       if (data.sessionToken) {
         const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
         document.cookie = `session-token=${data.sessionToken}; expires=${expiresAt.toUTCString()}; path=/; SameSite=Lax`;
@@ -47,7 +46,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     },
     onError: (error) => {
       toast.error(error.message || "Invalid verification code");
-      setVerificationCode("");
     },
   });
 
@@ -61,7 +59,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   };
 
   const handleCodeComplete = (code: string) => {
-    setVerificationCode(code);
     verifyCode.mutate({ email, code });
   };
 
@@ -116,23 +113,13 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
               <div className="flex flex-col gap-2">
                 <Button
-                  variant="outline"
-                  onClick={() => {
-                    setStep("email");
-                    setVerificationCode("");
-                  }}
-                  disabled={verifyCode.isPending}
-                >
-                  Change Email
-                </Button>
-                <Button
                   variant="ghost"
                   onClick={() => {
                     requestCode.mutate({ email });
                     toast.info("Code resent to your email");
                   }}
                   disabled={requestCode.isPending}
-                  className="text-sm"
+                  className="cursor-pointer text-sm"
                 >
                   Resend Code
                 </Button>

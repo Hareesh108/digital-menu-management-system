@@ -6,24 +6,21 @@ import { generateVerificationCode, sendVerificationEmail } from "~/server/auth/e
 import { createSession, deleteSession } from "~/server/auth/session";
 
 export const authRouter = createTRPCRouter({
-  // Request verification code (for signup or login)
   requestCode: publicProcedure
     .input(
       z.object({
         email: z.string().email(),
-        name: z.string().min(1).optional(), // Only for signup
-        country: z.string().min(1).optional(), // Only for signup
+        name: z.string().min(1).optional(),
+        country: z.string().min(1).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const { email, name, country } = input;
 
-      // Check if user exists
       const existingUser = await ctx.db.user.findUnique({
         where: { email },
       });
 
-      // If signing up (name and country provided), ensure user doesn't exist
       if (name && country) {
         if (existingUser) {
           throw new TRPCError({
@@ -32,7 +29,6 @@ export const authRouter = createTRPCRouter({
           });
         }
 
-        // Create user (unverified) with verification code
         const code = generateVerificationCode();
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
@@ -55,7 +51,6 @@ export const authRouter = createTRPCRouter({
         };
       }
 
-      // If logging in, user must exist
       if (!existingUser) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -63,7 +58,6 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      // Generate and send verification code
       const code = generateVerificationCode();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
@@ -83,7 +77,6 @@ export const authRouter = createTRPCRouter({
       };
     }),
 
-  // Verify code and complete login/signup
   verifyCode: publicProcedure
     .input(
       z.object({
@@ -105,7 +98,6 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      // Check if code is valid
       if (
         user.verificationCode !== code ||
         !user.verificationCodeExpires ||
@@ -127,18 +119,16 @@ export const authRouter = createTRPCRouter({
         },
       });
 
-      // Create session and get the token
       const sessionToken = await createSession({
         userId: updatedUser.id,
         email: updatedUser.email,
       });
 
-      // Log the login event (server-side) so you can verify successful logins in the server logs
       console.log(`User logged in: ${updatedUser.email}`);
 
       return {
         success: true,
-        sessionToken, // Return token so client can set it as cookie if server-side setting failed
+        sessionToken,
         user: {
           id: updatedUser.id,
           email: updatedUser.email,
@@ -149,7 +139,6 @@ export const authRouter = createTRPCRouter({
       };
     }),
 
-  // Get current session
   getSession: publicProcedure.query(async ({ ctx }) => {
     if (!ctx.session) {
       return { user: null };
@@ -174,7 +163,6 @@ export const authRouter = createTRPCRouter({
     return { user };
   }),
 
-  // Logout
   logout: publicProcedure.mutation(async () => {
     await deleteSession();
     return { success: true };
