@@ -127,14 +127,18 @@ export const authRouter = createTRPCRouter({
         },
       });
 
-      // Create session
-      await createSession({
+      // Create session and get the token
+      const sessionToken = await createSession({
         userId: updatedUser.id,
         email: updatedUser.email,
       });
 
+      // Log the login event (server-side) so you can verify successful logins in the server logs
+      console.log(`User logged in: ${updatedUser.email}`);
+
       return {
         success: true,
+        sessionToken, // Return token so client can set it as cookie if server-side setting failed
         user: {
           id: updatedUser.id,
           email: updatedUser.email,

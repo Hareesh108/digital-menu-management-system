@@ -1,13 +1,22 @@
-import React from "react";
+import { redirect } from "next/navigation";
+
+import { getSession } from "~/server/auth/session";
 
 import { AppSidebar } from "~/components/app-sidebar";
+import { CurrentUserEmail } from "~/components/current-user-email";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 
 type Props = {
   children: React.ReactNode;
 };
 
-export default function Layout({ children }: Props) {
+export default async function Layout({ children }: Props) {
+  // Check if user is authenticated; redirect to login if not
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+
   return (
     <SidebarProvider
       style={
@@ -17,6 +26,7 @@ export default function Layout({ children }: Props) {
         } as React.CSSProperties
       }
     >
+      <CurrentUserEmail />
       <AppSidebar variant="inset" />
       <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>

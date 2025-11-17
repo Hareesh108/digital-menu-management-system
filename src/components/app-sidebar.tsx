@@ -10,8 +10,8 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "~/compone
 
 const data = {
   user: {
-    name: "Hi,",
-    email: "hareesh@gmail.com",
+    name: "Hey there 👋",
+    greet: "Hope you're having a great day!",
     avatar: "/logo/user.png",
   },
   navMain: [

@@ -30,7 +30,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button onClick={handleSignIn} className="ml-2">
+            <Button onClick={handleSignIn} className="ml-2 cursor-pointer">
               Sign in
             </Button>
           </div>
@@ -50,7 +50,7 @@ export default function LandingPage() {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button size="lg" onClick={handleSignIn}>
+              <Button size="lg" className="cursor-pointer" onClick={handleSignIn}>
                 Sign in
               </Button>
             </div>

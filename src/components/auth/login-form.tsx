@@ -37,6 +37,11 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   const verifyCode = api.auth.verifyCode.useMutation({
     onSuccess: async (data) => {
       toast.success("Login successful!");
+      // If server returned a sessionToken, set it as a cookie (fallback for when server-side setting failed)
+      if (data.sessionToken) {
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        document.cookie = `session-token=${data.sessionToken}; expires=${expiresAt.toUTCString()}; path=/; SameSite=Lax`;
+      }
       await utils.auth.getSession.invalidate();
       router.push("/dashboard");
     },

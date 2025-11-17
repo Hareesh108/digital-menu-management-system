@@ -10,7 +10,9 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { getSession } from "~/server/auth/session";
+import type { SessionPayload } from "~/server/auth/session";
+
+import { env } from "~/env";
 import { db } from "~/server/db";
 
 /**
@@ -26,7 +28,45 @@ import { db } from "~/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await getSession();
+  const headers = opts.headers;
+
+  // Try to parse session token from cookie header (used by fetchRequestHandler)
+  let session: SessionPayload | null = null;
+
+  try {
+    const cookieHeader = headers.get("cookie") ?? "";
+    const COOKIE_NAME = "session-token";
+
+    const cookie = cookieHeader
+      .split(";")
+      .map((c) => c.trim())
+      .find((c) => c.startsWith(`${COOKIE_NAME}=`));
+
+    const token = cookie ? cookie.split("=")[1] : null;
+
+    if (token) {
+      const { jwtVerify } = await import("jose");
+      const { payload } = await jwtVerify(token, new TextEncoder().encode(env.JWT_SECRET));
+      const pl = payload as Record<string, unknown>;
+      const userId = typeof pl.userId === "string" ? pl.userId : undefined;
+      const email = typeof pl.email === "string" ? pl.email : undefined;
+
+      if (userId && email) {
+        session = { userId, email } as SessionPayload;
+      }
+    }
+  } catch (err) {
+    // ignore – leave session null
+    if (process.env.NODE_ENV === "development") console.warn("[trpc] failed to parse session from cookie", err);
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    if (session) {
+      console.log("[trpc] session found for:", session.email);
+    } else {
+      console.log("[trpc] no session in request headers");
+    }
+  }
 
   return {
     db,

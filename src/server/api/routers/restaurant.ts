@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
+import type { PrismaClient } from "../../../../generated/prisma";
+
 // Helper function to generate slug from name
 function generateSlug(name: string): string {
   return name
@@ -14,11 +16,7 @@ function generateSlug(name: string): string {
 }
 
 // Helper function to ensure unique slug
-async function ensureUniqueSlug(
-  db: Parameters<typeof protectedProcedure>[0]["ctx"]["db"],
-  baseSlug: string,
-  excludeId?: string,
-): Promise<string> {
+async function ensureUniqueSlug(db: PrismaClient, baseSlug: string, excludeId?: string): Promise<string> {
   let slug = baseSlug;
   let counter = 1;
 
@@ -49,16 +47,18 @@ export const restaurantRouter = createTRPCRouter({
       const baseSlug = generateSlug(input.name);
       const slug = await ensureUniqueSlug(ctx.db, baseSlug);
 
-      // NOTE: Using a placeholder ownerId since auth is disabled
-      // TODO: Use ctx.session?.userId when auth is enabled
-      const placeholderOwnerId = "cmi0v6zy00000ln6ci8mjxigx";
+      // Use the authenticated user's id as the owner. protectedProcedure ensures ctx.session exists.
+      const ownerId = ctx.session?.userId;
+      if (!ownerId) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to create a restaurant" });
+      }
 
       const restaurant = await ctx.db.restaurant.create({
         data: {
           name: input.name,
           location: input.location,
           slug,
-          ownerId: placeholderOwnerId, // ctx.session?.userId ?? placeholderOwnerId,
+          ownerId,
         },
       });
 
@@ -67,12 +67,16 @@ export const restaurantRouter = createTRPCRouter({
 
   // Get all restaurants for the current user
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    // NOTE: Authentication skipped for now - get all restaurants
-    // TODO: Re-enable user filtering: where: { ownerId: ctx.session.userId }
+    // Return restaurants owned by the current authenticated user
+    const ownerId = ctx.session?.userId;
+    if (!ownerId) {
+      throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to view restaurants" });
+    }
+
     const restaurants = await ctx.db.restaurant.findMany({
-      // where: {
-      //   ownerId: ctx.session?.userId,
-      // },
+      where: {
+        ownerId,
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -92,10 +96,15 @@ export const restaurantRouter = createTRPCRouter({
   // Get a single restaurant by ID
   getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
     // NOTE: Authentication skipped
+    const ownerId = ctx.session?.userId;
+    if (!ownerId) {
+      throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to view this restaurant" });
+    }
+
     const restaurant = await ctx.db.restaurant.findFirst({
       where: {
         id: input.id,
-        // ownerId: ctx.session?.userId,
+        ownerId,
       },
       include: {
         categories: {
@@ -217,10 +226,15 @@ export const restaurantRouter = createTRPCRouter({
 
       // NOTE: Authentication skipped
       // Check if restaurant exists
+      const ownerId = ctx.session?.userId;
+      if (!ownerId) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to update this restaurant" });
+      }
+
       const existing = await ctx.db.restaurant.findFirst({
         where: {
           id,
-          // ownerId: ctx.session?.userId,
+          ownerId,
         },
       });
 
@@ -254,10 +268,15 @@ export const restaurantRouter = createTRPCRouter({
   delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
     // NOTE: Authentication skipped
     // Check if restaurant exists
+    const ownerId = ctx.session?.userId;
+    if (!ownerId) {
+      throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in to delete this restaurant" });
+    }
+
     const existing = await ctx.db.restaurant.findFirst({
       where: {
         id: input.id,
-        // ownerId: ctx.session?.userId,
+        ownerId,
       },
     });
 

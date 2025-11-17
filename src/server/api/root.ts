@@ -1,8 +1,8 @@
 import { authRouter } from "~/server/api/routers/auth";
 import { categoryRouter } from "~/server/api/routers/category";
+import { dashboardRouter } from "~/server/api/routers/dashboard";
 import { dishRouter } from "~/server/api/routers/dish";
 import { restaurantRouter } from "~/server/api/routers/restaurant";
-import { dashboardRouter } from "~/server/api/routers/dashboard";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**

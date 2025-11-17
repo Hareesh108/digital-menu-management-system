@@ -9,9 +9,10 @@ const COOKIE_NAME = "session-token";
 export interface SessionPayload {
   userId: string;
   email: string;
+  [key: string]: string;
 }
 
-export async function createSession(payload: SessionPayload) {
+export async function createSession(payload: SessionPayload): Promise<string> {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
   const session = await new SignJWT(payload)
@@ -20,14 +21,27 @@ export async function createSession(payload: SessionPayload) {
     .setExpirationTime(expiresAt)
     .sign(JWT_SECRET);
 
-  const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, session, {
-    httpOnly: true,
-    secure: env.NODE_ENV === "production",
-    expires: expiresAt,
-    sameSite: "lax",
-    path: "/",
-  });
+  try {
+    // Try to set cookie via next/headers (works in Server Components and Route Handlers)
+    const cookieStore = await cookies();
+    cookieStore.set(COOKIE_NAME, session, {
+      httpOnly: true,
+      secure: env.NODE_ENV === "production",
+      expires: expiresAt,
+      sameSite: "lax",
+      path: "/",
+    });
+    console.log("[auth] Session cookie set successfully");
+  } catch {
+    // If next/headers fails (e.g., in tRPC context), log a note
+    // The token is still returned and can be set by the caller
+    console.log(
+      "[auth] Note: Setting cookie via next/headers failed (may be in tRPC context), token is returned for client-side handling",
+    );
+  }
+
+  // Always return the token
+  return session;
 }
 
 export async function getSession(): Promise<SessionPayload | null> {
@@ -40,7 +54,7 @@ export async function getSession(): Promise<SessionPayload | null> {
 
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as SessionPayload;
+    return payload as unknown as SessionPayload;
   } catch {
     return null;
   }

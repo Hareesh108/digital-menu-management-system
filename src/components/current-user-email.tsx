@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
+
 import { api } from "~/trpc/react";
 
 export function CurrentUserEmail() {
   const utils = api.useUtils();
+  const lastStoredEmailRef = useRef<string | null>(null);
+
   const getSession = api.auth.getSession.useQuery(undefined, {
     enabled: true,
   });
@@ -13,7 +16,21 @@ export function CurrentUserEmail() {
     onSuccess: () => {
       void utils.auth.getSession.invalidate();
     },
+    onError: (error) => {
+      console.error("[CurrentUserEmail] storeEmail error:", error);
+    },
   });
+
+  const handleStoreEmail = useCallback(
+    (email: string) => {
+      // Only call if email has changed
+      if (lastStoredEmailRef.current !== email) {
+        lastStoredEmailRef.current = email;
+        storeEmail.mutate({ email });
+      }
+    },
+    [storeEmail],
+  );
 
   useEffect(() => {
     if (getSession.data?.user?.email) {
@@ -26,9 +43,9 @@ export function CurrentUserEmail() {
       } catch {}
 
       // attempt to store/confirm on the server (will be a no-op if the same)
-      storeEmail.mutate({ email });
+      handleStoreEmail(email);
     }
-  }, [getSession.data, storeEmail]);
+  }, [getSession.data?.user?.email, handleStoreEmail]);
 
   return null;
 }
