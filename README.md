@@ -33,7 +33,12 @@ The project uses the following technologies (T3-style stack + additions):
 
 ### 📽️ Demo Video
 
-<video src="public/demo/demo.webm" width="600" controls></video>
+<video width="600" controls poster="https://raw.githubusercontent.com/Hareesh108/digital-menu-management-system/main/public/demo/poster.png">
+  <source src="https://raw.githubusercontent.com/Hareesh108/digital-menu-management-system/main/public/demo/demo.webm" type="video/webm">
+  <source src="https://raw.githubusercontent.com/Hareesh108/digital-menu-management-system/main/public/demo/demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.  
+  <a href="https://raw.githubusercontent.com/Hareesh108/digital-menu-management-system/main/public/demo/demo.webm">Download the demo</a>.
+</video>
 
 ## Quick start (developer)
 
