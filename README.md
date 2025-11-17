@@ -33,7 +33,7 @@ The project uses the following technologies (T3-style stack + additions):
 
 ### 📽️ Demo Video
 
-[🎬 Demo Video (webm)](public/demo/demo.webm)
+<video src="public/demo/demo.webm" width="600" controls></video>
 
 ## Quick start (developer)
 
