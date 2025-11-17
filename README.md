@@ -31,6 +31,10 @@ The project uses the following technologies (T3-style stack + additions):
 - `npm run db:push` — reset database (danger: deletes data)
 - `npm run lint:check-fix` —Added prettier and eslint config to format code.
 
+### 📽️ Demo Video
+
+[🎬 Demo Video (webm)](public/demo/demo.webm)
+
 ## Quick start (developer)
 
 These steps will get the project running locally on Linux / macOS. For Windows, use WSL or adapt commands.
