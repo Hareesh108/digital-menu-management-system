@@ -14,8 +14,8 @@ import { RestaurantFormDialog } from "~/components/restaurant/restaurant-form-di
 import { SiteHeader } from "~/components/site-header";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { DataTable } from "~/components/ui/data-table";
 import { Skeleton } from "~/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 
 type Restaurant = RouterOutputs["restaurant"]["getAll"][number];
 
@@ -124,84 +124,93 @@ export default function RestaurantManagementPage() {
               </Button>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Categories</TableHead>
-                  <TableHead>Dishes</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {restaurants.map((restaurant) => (
-                  <TableRow key={restaurant.id}>
-                    <TableCell className="font-medium">{restaurant.name}</TableCell>
-                    <TableCell>{restaurant.location}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{restaurant._count?.categories ?? 0}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{restaurant._count?.dishes ?? 0}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <code className="rounded bg-muted px-2 py-1 text-xs">{restaurant.slug}</code>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleViewMenu(restaurant)}
-                          title="View Menu"
-                          className="cursor-pointer"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleCopyMenuUrl(restaurant)}
-                          title="Copy URL"
-                          className="cursor-pointer"
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleShowQR(restaurant)}
-                          title="Show QR Code"
-                          className="cursor-pointer"
-                        >
-                          <QrCode className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleEdit(restaurant)}
-                          title="Edit"
-                          className="cursor-pointer"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDelete(restaurant)}
-                          title="Delete"
-                          className="cursor-pointer text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable
+              data={restaurants.map((restaurant) => ({
+                ...restaurant,
+                categoryCount: restaurant._count?.categories ?? 0,
+                dishCount: restaurant._count?.dishes ?? 0,
+              }))}
+              columns={[
+                {
+                  key: "name",
+                  label: "Name",
+                  sortable: true,
+                  className: "font-medium",
+                },
+                {
+                  key: "location",
+                  label: "Location",
+                  sortable: true,
+                },
+                {
+                  key: "categoryCount",
+                  label: "Categories",
+                  sortable: true,
+                  render: (value) => <Badge variant="secondary">{String(value)}</Badge>,
+                },
+                {
+                  key: "dishCount",
+                  label: "Dishes",
+                  sortable: true,
+                  render: (value) => <Badge variant="secondary">{String(value)}</Badge>,
+                },
+                {
+                  key: "slug",
+                  label: "Slug",
+                  render: (value) => <code className="rounded bg-muted px-2 py-1 text-xs">{String(value)}</code>,
+                },
+              ]}
+              rowActionsColumn={(restaurant) => (
+                <div className="flex items-center justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleViewMenu(restaurant)}
+                    title="View Menu"
+                    className="cursor-pointer"
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleCopyMenuUrl(restaurant)}
+                    title="Copy URL"
+                    className="cursor-pointer"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleShowQR(restaurant)}
+                    title="Show QR Code"
+                    className="cursor-pointer"
+                  >
+                    <QrCode className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleEdit(restaurant)}
+                    title="Edit"
+                    className="cursor-pointer"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(restaurant)}
+                    title="Delete"
+                    className="cursor-pointer text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+              emptyMessage="No restaurants yet. Create your first restaurant to get started!"
+            />
           )}
         </div>
       </div>

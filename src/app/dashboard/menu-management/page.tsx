@@ -11,9 +11,9 @@ import { CategoryFormDialog, DeleteConfirmationDialog, DishFormDialog } from "~/
 import { SiteHeader } from "~/components/site-header";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { DataTable } from "~/components/ui/data-table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Skeleton } from "~/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 type Category = RouterOutputs["category"]["getById"];
@@ -211,46 +211,48 @@ export default function MenuManagementPage() {
                     </Button>
                   </div>
                 ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Dishes</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {categories.map((category) => (
-                        <TableRow key={category.id}>
-                          <TableCell className="font-medium">{category.name}</TableCell>
-                          <TableCell>
-                            <Badge variant="secondary">{category._count?.dishes ?? 0}</Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleEditCategory(category)}
-                                title="Edit"
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleDeleteCategory(category)}
-                                title="Delete"
-                                className="text-destructive hover:text-destructive"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <DataTable
+                    data={categories.map((cat) => ({
+                      ...cat,
+                      dishCount: cat._count?.dishes ?? 0,
+                    }))}
+                    columns={[
+                      {
+                        key: "name",
+                        label: "Name",
+                        sortable: true,
+                        className: "font-medium",
+                      },
+                      {
+                        key: "dishCount",
+                        label: "Dishes",
+                        sortable: true,
+                        render: (value) => <Badge variant="secondary">{String(value)}</Badge>,
+                      },
+                    ]}
+                    rowActionsColumn={(category) => (
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEditCategory(category as CategoryFromList)}
+                          title="Edit"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteCategory(category as CategoryFromList)}
+                          title="Delete"
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    emptyMessage="No categories yet. Create your first category!"
+                  />
                 )}
               </div>
             </TabsContent>
@@ -272,34 +274,54 @@ export default function MenuManagementPage() {
                     </Button>
                   </div>
                 ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Spice Level</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Categories</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {dishes.map((dish) => (
-                        <TableRow key={dish.id}>
-                          <TableCell className="font-medium">{dish.name}</TableCell>
-                          <TableCell className="max-w-md truncate">{dish.description}</TableCell>
-                          <TableCell>
-                            {dish.spiceLevel && dish.spiceLevel > 0 ? (
-                              <Badge variant="outline">{"🌶️".repeat(dish.spiceLevel)}</Badge>
-                            ) : (
-                              <span className="text-sm text-muted-foreground">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell className="max-w-md truncate">{dish.price ?? "-"}</TableCell>
-                          <TableCell>
+                  <DataTable
+                    data={dishes}
+                    columns={[
+                      {
+                        key: "name",
+                        label: "Name",
+                        sortable: true,
+                        className: "font-medium",
+                      },
+                      {
+                        key: "description",
+                        label: "Description",
+                        className: "max-w-md truncate",
+                      },
+                      {
+                        key: "spiceLevel",
+                        label: "Spice Level",
+                        sortable: true,
+                        render: (value) => {
+                          const level = typeof value === "number" ? value : 0;
+                          return level > 0 ? (
+                            <Badge variant="outline">{"🌶️".repeat(level)}</Badge>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">-</span>
+                          );
+                        },
+                      },
+                      {
+                        key: "price",
+                        label: "Price",
+                        sortable: true,
+                        className: "max-w-md truncate",
+                        render: (value) => {
+                          if (typeof value === "number") {
+                            return String(value);
+                          }
+                          return "-";
+                        },
+                      },
+                      {
+                        key: "categories",
+                        label: "Categories",
+                        render: (value) => {
+                          const cats = Array.isArray(value) ? value : [];
+                          return (
                             <div className="flex flex-wrap gap-1">
-                              {dish.categories.length > 0 ? (
-                                dish.categories.slice(0, 2).map((cat) => (
+                              {cats.length > 0 ? (
+                                cats.slice(0, 2).map((cat: { id: string; name: string }) => (
                                   <Badge key={cat.id} variant="secondary" className="text-xs">
                                     {cat.name}
                                   </Badge>
@@ -307,33 +329,34 @@ export default function MenuManagementPage() {
                               ) : (
                                 <span className="text-sm text-muted-foreground">No categories</span>
                               )}
-                              {dish.categories.length > 2 && (
+                              {cats.length > 2 && (
                                 <Badge variant="secondary" className="text-xs">
-                                  +{dish.categories.length - 2}
+                                  +{cats.length - 2}
                                 </Badge>
                               )}
                             </div>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <Button variant="ghost" size="icon" onClick={() => handleEditDish(dish)} title="Edit">
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleDeleteDish(dish)}
-                                title="Delete"
-                                className="text-destructive hover:text-destructive"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                          );
+                        },
+                      },
+                    ]}
+                    rowActionsColumn={(dish) => (
+                      <div className="flex items-center justify-end gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => handleEditDish(dish)} title="Edit">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteDish(dish)}
+                          title="Delete"
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                    emptyMessage="No dishes yet. Create your first dish!"
+                  />
                 )}
               </div>
             </TabsContent>
