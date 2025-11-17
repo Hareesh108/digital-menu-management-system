@@ -12,34 +12,48 @@ export function LogoutButton(props: React.ComponentPropsWithoutRef<typeof Sideba
   const router = useRouter();
   const utils = api.useUtils();
 
-  // NOTE: Authentication is disabled, so we'll just clear any local state
   const logoutMutation = api.auth.logout.useMutation({
     onSuccess: () => {
-      toast.success("Logged out successfully");
+      // Clear session cookie from client side
+      document.cookie = "session-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      
+      // Clear localStorage
+      try {
+        localStorage.removeItem("currentUserEmail");
+      } catch {}
+
+      // Invalidate cache and show success message
       void utils.auth.getSession.invalidate();
+      toast.success("Logged out successfully");
+      
+      // Redirect to login
       router.push("/login");
     },
-    onError: () => {
-      // If auth fails, just redirect anyway
+    onError: (error) => {
+      console.error("Logout error:", error);
+      // Still clear local data and redirect on error
+      document.cookie = "session-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      try {
+        localStorage.removeItem("currentUserEmail");
+      } catch {}
       router.push("/login");
     },
   });
 
   const handleLogout = () => {
-    // Try to logout via API if available, otherwise just redirect
-    try {
-      logoutMutation.mutate();
-    } catch {
-      router.push("/login");
-    }
+    logoutMutation.mutate();
   };
 
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
-        <SidebarMenuButton onClick={handleLogout} className="cursor-pointer">
+        <SidebarMenuButton 
+          onClick={handleLogout} 
+          className="cursor-pointer"
+          disabled={logoutMutation.isPending}
+        >
           <IconLogout />
-          Log out
+          {logoutMutation.isPending ? "Logging out..." : "Log out"}
         </SidebarMenuButton>
       </SidebarGroupContent>
     </SidebarGroup>
