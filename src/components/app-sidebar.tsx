@@ -9,11 +9,6 @@ import { NavUser } from "~/components/nav-user";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "~/components/ui/sidebar";
 
 const data = {
-  user: {
-    name: "Hey there 👋",
-    greet: "Hope you're having a great day!",
-    avatar: "/logo/user.png",
-  },
   navMain: [
     {
       title: "Restaurant Management",
@@ -32,7 +27,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
