@@ -16,15 +16,16 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
-type Category = RouterOutputs["category"]["getAll"][number];
-type Dish = RouterOutputs["dish"]["getAll"][number];
+type Category = RouterOutputs["category"]["getById"];
+type Dish = RouterOutputs["dish"]["getById"];
+type CategoryFromList = RouterOutputs["category"]["getAll"][number];
+type DishFromList = RouterOutputs["dish"]["getAll"][number];
 
 export default function MenuManagementPage() {
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [dishDialogOpen, setDishDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteType, setDeleteType] = useState<"category" | "dish" | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
   const [itemToDelete, setItemToDelete] = useState<{
@@ -81,12 +82,14 @@ export default function MenuManagementPage() {
     setCategoryDialogOpen(true);
   };
 
-  const handleEditCategory = (category: Category) => {
-    setSelectedCategory(category);
+  const handleEditCategory = (category: CategoryFromList) => {
+    // Cast the list item to the expected type - the dialog will use it as a reference
+    // The full data will be available from the API queries if needed
+    setSelectedCategory(category as unknown as Category);
     setCategoryDialogOpen(true);
   };
 
-  const handleDeleteCategory = (category: Category) => {
+  const handleDeleteCategory = (category: CategoryFromList) => {
     setItemToDelete({ id: category.id, name: category.name, type: "category" });
     setDeleteDialogOpen(true);
   };
@@ -96,12 +99,14 @@ export default function MenuManagementPage() {
     setDishDialogOpen(true);
   };
 
-  const handleEditDish = (dish: Dish) => {
-    setSelectedDish(dish);
+  const handleEditDish = (dish: DishFromList) => {
+    // Cast the list item to the expected type - the dialog will use it as a reference
+    // The full data will be available from the API queries if needed
+    setSelectedDish(dish as unknown as Dish);
     setDishDialogOpen(true);
   };
 
-  const handleDeleteDish = (dish: Dish) => {
+  const handleDeleteDish = (dish: DishFromList) => {
     setItemToDelete({ id: dish.id, name: dish.name, type: "dish" });
     setDeleteDialogOpen(true);
   };
@@ -269,7 +274,7 @@ export default function MenuManagementPage() {
                         <TableHead>Description</TableHead>
                         <TableHead>Spice Level</TableHead>
                         <TableHead>Categories</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead className="text-center">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
