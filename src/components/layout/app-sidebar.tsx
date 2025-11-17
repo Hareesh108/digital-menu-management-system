@@ -4,8 +4,8 @@ import { IconDashboard, IconListDetails } from "@tabler/icons-react";
 import * as React from "react";
 
 import { LogoutButton } from "~/components/auth/logout-button";
-import { NavMain } from "~/components/nav-main";
-import { NavUser } from "~/components/nav-user";
+import { NavMain } from "~/components/layout/nav-main";
+import { NavUser } from "~/components/layout/nav-user";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "~/components/ui/sidebar";
 
 const data = {

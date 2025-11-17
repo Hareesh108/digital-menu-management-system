@@ -9,9 +9,10 @@ import type { RouterOutputs } from "~/trpc/react";
 import { api } from "~/trpc/react";
 
 import { DeleteConfirmationDialog } from "~/components/delete-confirmation-dialog";
+import { FormattedDate } from "~/components/fields";
+import { SiteHeader } from "~/components/layout/site-header";
 import { QRCodeDialog } from "~/components/restaurant/qr-code-dialog";
 import { RestaurantFormDialog } from "~/components/restaurant/restaurant-form-dialog";
-import { SiteHeader } from "~/components/site-header";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { DataTable } from "~/components/ui/data-table";
@@ -158,6 +159,12 @@ export default function RestaurantManagementPage() {
                   key: "slug",
                   label: "Slug",
                   render: (value) => <code className="rounded bg-muted px-2 py-1 text-xs">{String(value)}</code>,
+                },
+                {
+                  key: "createdAt",
+                  label: "Created At",
+                  sortable: true,
+                  render: (row) => <FormattedDate value={row} />,
                 },
               ]}
               rowActionsColumn={(restaurant) => (

@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 
 import { getSession } from "~/server/auth/session";
 
-import { AppSidebar } from "~/components/app-sidebar";
-import { CurrentUserEmail } from "~/components/current-user-email";
+import { AppSidebar } from "~/components/layout/app-sidebar";
+import { CurrentUserEmail } from "~/components/layout/current-user-email";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 
 type Props = {

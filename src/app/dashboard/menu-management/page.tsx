@@ -7,8 +7,9 @@ import { toast } from "sonner";
 import type { RouterOutputs } from "~/trpc/react";
 import { api } from "~/trpc/react";
 
+import { FormattedDate } from "~/components/fields";
+import { SiteHeader } from "~/components/layout/site-header";
 import { CategoryFormDialog, DeleteConfirmationDialog, DishFormDialog } from "~/components/menu";
-import { SiteHeader } from "~/components/site-header";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { DataTable } from "~/components/ui/data-table";
@@ -229,6 +230,12 @@ export default function MenuManagementPage() {
                         sortable: true,
                         render: (value) => <Badge variant="secondary">{String(value)}</Badge>,
                       },
+                      {
+                        key: "createdAt",
+                        label: "Created At",
+                        sortable: true,
+                        render: (row) => <FormattedDate value={row} />,
+                      },
                     ]}
                     rowActionsColumn={(category) => (
                       <div className="flex items-center justify-end gap-2">
@@ -337,6 +344,12 @@ export default function MenuManagementPage() {
                             </div>
                           );
                         },
+                      },
+                      {
+                        key: "createdAt",
+                        label: "Created At",
+                        sortable: true,
+                        render: (row) => <FormattedDate value={row} />,
                       },
                     ]}
                     rowActionsColumn={(dish) => (
