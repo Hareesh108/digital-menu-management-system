@@ -23,7 +23,6 @@ export function CurrentUserEmail() {
 
   const handleStoreEmail = useCallback(
     (email: string) => {
-      // Only call if email has changed
       if (lastStoredEmailRef.current !== email) {
         lastStoredEmailRef.current = email;
         storeEmail.mutate({ email });
@@ -35,14 +34,11 @@ export function CurrentUserEmail() {
   useEffect(() => {
     if (getSession.data?.user?.email) {
       const email = getSession.data.user.email;
-      console.log("email:", email);
 
-      // store locally
       try {
         localStorage.setItem("currentUserEmail", email);
       } catch {}
 
-      // attempt to store/confirm on the server (will be a no-op if the same)
       handleStoreEmail(email);
     }
   }, [getSession.data?.user?.email, handleStoreEmail]);

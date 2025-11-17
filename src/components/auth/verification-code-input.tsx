@@ -29,7 +29,6 @@ export function VerificationCodeInput({
   const handleChange = (index: number, value: string) => {
     if (disabled) return;
 
-    // Only allow digits
     const digit = value.replace(/\D/g, "");
     if (digit.length > 1) return;
 
@@ -37,12 +36,10 @@ export function VerificationCodeInput({
     newCodes[index] = digit;
     setCodes(newCodes);
 
-    // Move to next input if digit entered
     if (digit && index < length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
 
-    // Check if all codes are filled
     if (newCodes.every((c) => c !== "") && newCodes.join("").length === length) {
       onComplete(newCodes.join(""));
     }
@@ -66,7 +63,6 @@ export function VerificationCodeInput({
       const newCodes = pastedData.split("");
       setCodes(newCodes);
 
-      // Focus last input
       inputRefs.current[length - 1]?.focus();
 
       onComplete(pastedData);

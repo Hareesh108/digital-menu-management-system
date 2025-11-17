@@ -24,18 +24,14 @@ interface MenuViewProps {
 }
 
 export function MenuView({ restaurant }: MenuViewProps) {
-  // category & overlay state
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(restaurant.categories[0]?.id ?? null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // refs for category sections and scroll container
   const categoryRefs = useRef<Record<string, HTMLElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // visible category (from observer)
   const [visibleCategory, setVisibleCategory] = useState<string | null>(restaurant.categories[0]?.id ?? null);
 
-  // dialog and viewed tracking
   const [dishDialogOpen, setDishDialogOpen] = useState(false);
   const [selectedDish, setSelectedDish] = useState<(typeof restaurant.categories)[0]["dishes"][0] | null>(null);
 
@@ -89,7 +85,6 @@ export function MenuView({ restaurant }: MenuViewProps) {
     return () => observer.disconnect();
   }, [restaurant.categories]);
 
-  // helpers
   const findDishById = (id: string) => {
     for (const cat of restaurant.categories) {
       const found = cat.dishes.find((d) => d.id === id);

@@ -24,10 +24,11 @@ type DishFromList = RouterOutputs["dish"]["getAll"][number];
 export default function MenuManagementPage() {
   const [activeTab, setActiveTab] = useState("categories");
 
-  const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [dishDialogOpen, setDishDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
   const [itemToDelete, setItemToDelete] = useState<{
@@ -85,8 +86,6 @@ export default function MenuManagementPage() {
   };
 
   const handleEditCategory = (category: CategoryFromList) => {
-    // Cast the list item to the expected type - the dialog will use it as a reference
-    // The full data will be available from the API queries if needed
     setSelectedCategory(category as unknown as Category);
     setCategoryDialogOpen(true);
   };
@@ -102,8 +101,6 @@ export default function MenuManagementPage() {
   };
 
   const handleEditDish = (dish: DishFromList) => {
-    // Cast the list item to the expected type - the dialog will use it as a reference
-    // The full data will be available from the API queries if needed
     setSelectedDish(dish as unknown as Dish);
     setDishDialogOpen(true);
   };

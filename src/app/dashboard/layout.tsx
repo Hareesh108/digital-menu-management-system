@@ -11,7 +11,6 @@ type Props = {
 };
 
 export default async function Layout({ children }: Props) {
-  // Check if user is authenticated; redirect to login if not
   const session = await getSession();
   if (!session) {
     redirect("/login");

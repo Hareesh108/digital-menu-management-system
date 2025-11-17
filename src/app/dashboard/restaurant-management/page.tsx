@@ -21,16 +21,17 @@ type Restaurant = RouterOutputs["restaurant"]["getAll"][number];
 
 export default function RestaurantManagementPage() {
   const router = useRouter();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [qrDialogOpen, setQrDialogOpen] = useState(false);
+
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [restaurantToDelete, setRestaurantToDelete] = useState<Restaurant | null>(null);
 
   const utils = api.useUtils();
   const { data: sessionData } = api.auth.getSession.useQuery();
 
-  // Only fetch restaurants when the user is authenticated
   const { data: restaurants, isLoading } = api.restaurant.getAll.useQuery(undefined, {
     enabled: !!sessionData?.user,
   });

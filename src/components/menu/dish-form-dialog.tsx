@@ -36,6 +36,17 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
   const utils = api.useUtils();
   const isEditing = !!dish;
 
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
+
+  const [spiceLevel, setSpiceLevel] = useState<string>("0");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [errors, setErrors] = useState<{
+    name?: string;
+    description?: string;
+  }>({});
+
   const { data: categories } = api.category.getAll.useQuery({ restaurantId }, { enabled: open });
 
   const createMutation = api.dish.create.useMutation({
@@ -63,23 +74,12 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
     },
   });
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
-  // Use "0" to represent "None" (must be non-empty)
-  const [spiceLevel, setSpiceLevel] = useState<string>("0");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [errors, setErrors] = useState<{
-    name?: string;
-    description?: string;
-  }>({});
-
   useEffect(() => {
     if (dish) {
       setName(dish.name);
       setDescription(dish.description);
       setImage(dish.image ?? "");
-      setSpiceLevel(dish.spiceLevel?.toString() ?? "0"); // default to "0"
+      setSpiceLevel(dish.spiceLevel?.toString() ?? "0"); 
       setSelectedCategories(dish.categories.map((c) => c.id));
     } else {
       reset();
@@ -204,7 +204,7 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
                 Optional: Choose an image for your dish
                 <br />
                 <span className="text-xs text-muted-foreground">
-                  Note: Images are currently selected from a static list. For a dynamic approach, you can allow users to
+                  Note: Images are currently selected from a static list. For a dynamic approach, we can allow users to
                   upload images and store them in a cloud service like S3 storage.
                 </span>
               </FieldDescription>
@@ -220,7 +220,6 @@ export function DishFormDialog({ open, onOpenChange, restaurantId, dish }: DishF
                   <SelectValue placeholder="Select spice level (optional)" />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* Use "0" instead of empty string */}
                   <SelectItem value="0">None</SelectItem>
                   <SelectItem value="1">🌶️ Mild (1)</SelectItem>
                   <SelectItem value="2">🌶️🌶️ Medium (2)</SelectItem>

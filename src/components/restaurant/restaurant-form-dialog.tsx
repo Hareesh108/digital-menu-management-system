@@ -35,7 +35,6 @@ export function RestaurantFormDialog({ open, onOpenChange, restaurant }: Restaur
       toast.success("Restaurant created successfully");
       void utils.restaurant.getAll.invalidate();
       onOpenChange(false);
-      // reset();
     },
     onError: (error) => {
       toast.error(error.message || "Failed to create restaurant");
