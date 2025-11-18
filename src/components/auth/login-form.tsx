@@ -17,6 +17,8 @@ import { Input } from "~/components/ui/input";
 
 type Step = "email" | "code";
 
+const MOCK_OTP = process.env.NEXT_PUBLIC_ALLOW_MOCK_OTP === "true";
+
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
 
@@ -110,30 +112,22 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
                 <VerificationCodeInput onComplete={handleCodeComplete} disabled={verifyCode.isPending} />
 
-                <FieldDescription className="text-center">
-                  We sent a 6-digit code to <span className="font-medium text-primary">{email || "your email"}</span>.
-                  <br />
-                  Check your inbox or spam folder.
-                </FieldDescription>
-              </Field>
+                <Field>
+                  <FieldDescription className="text-center">
+                    We sent a 6-digit code to:
+                    <span className="font-medium text-primary"> {email} </span>
+                    <br />
+                    Please check your inbox or spam folder.
+                  </FieldDescription>
 
-              <div className="flex flex-col gap-2">
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    if (!email) {
-                      toast.error("Please enter your email first");
-                      return;
-                    }
-                    requestCode.mutate({ email });
-                    toast.info(`Code resent to ${email}`);
-                  }}
-                  disabled={requestCode.isPending || !email}
-                  className="cursor-pointer text-sm"
-                >
-                  Resend Code
-                </Button>
-              </div>
+                  {MOCK_OTP && (
+                    <p className="mt-2 text-center text-sm text-muted-foreground">
+                      Mock OTP is enabled <br /> you can use
+                      <span className="font-semibold text-primary"> 123456 </span> to log in.
+                    </p>
+                  )}
+                </Field>
+              </Field>
             </div>
           )}
         </CardContent>

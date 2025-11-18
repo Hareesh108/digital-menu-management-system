@@ -18,6 +18,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 
 type Step = "info" | "code";
 
+const MOCK_OTP = process.env.NEXT_PUBLIC_ALLOW_MOCK_OTP === "true";
+
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
 
@@ -155,28 +157,24 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <FieldLabel>Verification Code</FieldLabel>
 
               <VerificationCodeInput onComplete={handleCodeComplete} disabled={verifyCode.isPending} />
+              <Field>
+                <FieldDescription className="text-center">
+                  We sent a 6-digit code to:
+                  <span className="font-medium text-primary"> {email} </span>
+                  <br />
+                  Please check your inbox or spam folder.
+                </FieldDescription>
 
-              <FieldDescription className="text-center">
-                We sent a 6-digit code to:
-                <span className="font-medium text-primary"> {email} </span>
-                <br />
-                Please check your inbox or spam folder.
-              </FieldDescription>
+                {MOCK_OTP && (
+                  <p className="mt-2 text-center text-sm text-muted-foreground">
+                    Mock OTP is enabled <br /> you can use
+                    <span className="font-semibold text-primary"> 123456 </span> to log in.
+                  </p>
+                )}
+              </Field>
             </Field>
 
             <div className="flex flex-col gap-2">
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  requestCode.mutate({ email, name, country });
-                  toast.info(`Code resent to ${email}`);
-                }}
-                disabled={requestCode.isPending}
-                className="text-sm"
-              >
-                Resend Code
-              </Button>
-
               <FieldDescription className="px-6 text-center">
                 Already have an account?{" "}
                 <Link href="/login" className="text-primary underline">

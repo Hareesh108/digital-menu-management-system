@@ -30,7 +30,6 @@ export const authRouter = createTRPCRouter({
         }
 
         const code = generateVerificationCode();
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
         await ctx.db.user.create({
           data: {
@@ -38,7 +37,7 @@ export const authRouter = createTRPCRouter({
             name,
             country,
             verificationCode: code,
-            verificationCodeExpires: expiresAt,
+            verificationCodeExpires: null,
             emailVerified: false,
           },
         });
@@ -59,13 +58,12 @@ export const authRouter = createTRPCRouter({
       }
 
       const code = generateVerificationCode();
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
       await ctx.db.user.update({
         where: { email },
         data: {
           verificationCode: code,
-          verificationCodeExpires: expiresAt,
+          verificationCodeExpires: null,
         },
       });
 
@@ -98,18 +96,25 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      if (
-        user.verificationCode !== code ||
-        !user.verificationCodeExpires ||
-        user.verificationCodeExpires < new Date()
-      ) {
+      const normalizedCode = code.trim();
+
+      const MOCK_OTP = "123456";
+      const allowMockOtp = process.env.NEXT_PUBLIC_ALLOW_MOCK_OTP === "true";
+
+      const usedMockOtp = allowMockOtp && normalizedCode === MOCK_OTP;
+      const isValidCode = usedMockOtp || user.verificationCode === normalizedCode;
+
+      if (!isValidCode) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Invalid or expired verification code",
+          message: "Invalid verification code",
         });
       }
 
-      // Mark email as verified and clear verification code
+      if (usedMockOtp) {
+        console.warn(`Mock OTP used for login: ${email}`);
+      }
+
       const updatedUser = await ctx.db.user.update({
         where: { email },
         data: {
