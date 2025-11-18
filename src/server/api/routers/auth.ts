@@ -5,6 +5,9 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/
 import { generateVerificationCode, sendVerificationEmail } from "~/server/auth/email";
 import { createSession, deleteSession } from "~/server/auth/session";
 
+console.log("Server NEXT_PUBLIC_ALLOW_MOCK_OTP:", process.env.NEXT_PUBLIC_ALLOW_MOCK_OTP);
+
+
 export const authRouter = createTRPCRouter({
   requestCode: publicProcedure
     .input(

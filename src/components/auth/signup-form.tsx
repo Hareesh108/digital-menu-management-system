@@ -20,6 +20,9 @@ type Step = "info" | "code";
 
 const MOCK_OTP = process.env.NEXT_PUBLIC_ALLOW_MOCK_OTP === "true";
 
+console.log("NEXT_PUBLIC_ALLOW_MOCK_OTP:", process.env.NEXT_PUBLIC_ALLOW_MOCK_OTP, "MOCK:", MOCK_OTP);
+
+
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
 
