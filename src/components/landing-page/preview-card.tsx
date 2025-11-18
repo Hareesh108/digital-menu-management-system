@@ -67,15 +67,13 @@ const SAMPLE_MENU = {
 export function PreviewCard({ className = "" }: { className?: string }) {
   const { restaurant, categories } = SAMPLE_MENU;
 
-  const previewImage = FOOD_ITEMS[Math.floor(Math.random() * FOOD_ITEMS.length)];
-
   return (
     <Card className={`overflow-hidden shadow-lg ${className}`}>
       <div className="flex flex-col lg:flex-row">
         <div className="relative h-48 w-full shrink-0 bg-slate-100 lg:h-auto lg:w-44">
           <Image
-            src={previewImage?.url ?? ""}
-            alt={previewImage?.name ?? "img"}
+            src={FOOD_ITEMS[4]?.url ?? ""}
+            alt={FOOD_ITEMS[4]?.name ?? "img"}
             fill
             sizes="(max-width: 1024px) 100vw, 176px"
             className="object-cover"
