@@ -107,18 +107,28 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
             <div className="space-y-4">
               <Field>
                 <FieldLabel>Verification Code</FieldLabel>
+
                 <VerificationCodeInput onComplete={handleCodeComplete} disabled={verifyCode.isPending} />
-                <FieldDescription className="text-center">Check your email for the 6-digit code</FieldDescription>
+
+                <FieldDescription className="text-center">
+                  We sent a 6-digit code to <span className="font-medium text-primary">{email || "your email"}</span>.
+                  <br />
+                  Check your inbox or spam folder.
+                </FieldDescription>
               </Field>
 
               <div className="flex flex-col gap-2">
                 <Button
                   variant="ghost"
                   onClick={() => {
+                    if (!email) {
+                      toast.error("Please enter your email first");
+                      return;
+                    }
                     requestCode.mutate({ email });
-                    toast.info("Code resent to your email");
+                    toast.info(`Code resent to ${email}`);
                   }}
-                  disabled={requestCode.isPending}
+                  disabled={requestCode.isPending || !email}
                   className="cursor-pointer text-sm"
                 >
                   Resend Code

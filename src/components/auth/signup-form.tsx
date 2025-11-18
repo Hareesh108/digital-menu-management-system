@@ -153,8 +153,15 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           <div className="space-y-4">
             <Field>
               <FieldLabel>Verification Code</FieldLabel>
+
               <VerificationCodeInput onComplete={handleCodeComplete} disabled={verifyCode.isPending} />
-              <FieldDescription className="text-center">Check your email for the 6-digit code</FieldDescription>
+
+              <FieldDescription className="text-center">
+                We sent a 6-digit code to:
+                <span className="font-medium text-primary"> {email} </span>
+                <br />
+                Please check your inbox or spam folder.
+              </FieldDescription>
             </Field>
 
             <div className="flex flex-col gap-2">
@@ -162,13 +169,20 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 variant="ghost"
                 onClick={() => {
                   requestCode.mutate({ email, name, country });
-                  toast.info("Code resent to your email");
+                  toast.info(`Code resent to ${email}`);
                 }}
                 disabled={requestCode.isPending}
                 className="text-sm"
               >
                 Resend Code
               </Button>
+
+              <FieldDescription className="px-6 text-center">
+                Already have an account?{" "}
+                <Link href="/login" className="text-primary underline">
+                  Sign in
+                </Link>
+              </FieldDescription>
             </div>
           </div>
         )}
