@@ -305,6 +305,52 @@ Visit <http://localhost:3000>
 * Sessions: The app uses JWT tokens stored in an httpOnly cookie named `session-token`. Keep `JWT_SECRET` stable across runs.
 * If you change Prisma schema, run `npm run db:generate` and either `db:push` or `db:migrate` depending on workflow.
 
+## Migration setup guide
+
+```bash
+# Introspect DB into schema.prisma (Optional, depend on the data sync)
+npx prisma db pull
+
+# Create the SQL that builds the current schema from an empty DB and write it into a migration folder
+mkdir -p prisma/migrations/000000_baseline
+npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/migrations/000000_baseline/migration.sql
+
+# Mark this migration as already applied in Prisma’s migration table
+npx prisma migrate resolve --applied "000000_baseline"
+
+# Verify status
+npx prisma migrate status
+
+# Generate client
+npx prisma generate
+
+# Example folder structure after this
+/prisma
+  schema.prisma
+  migrations/
+    000000_baseline/
+      migration.sql
+
+# Any new script change 
+npm run db:generate
+# OR
+# Name of the file (add-post-status)
+npx prisma migrate dev --name add-post-status 
+
+# New migration folder
+prisma/
+  migrations/
+    20251128134705_add-post-status/
+      migration.sql
+    000000_baseline/               (if you used baseline workflow)
+      migration.sql
+  schema.prisma
+
+# Verify status
+npx prisma migrate status
+
+```
+
 ## Troubleshooting
 
 * Database connection issues: ensure `DATABASE_URL` is correct and Postgres is running. Use `npm run db:studio` to inspect.

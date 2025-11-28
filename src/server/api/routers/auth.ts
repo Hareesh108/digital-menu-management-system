@@ -18,7 +18,8 @@ export const authRouter = createTRPCRouter({
       const { email, name, country } = input;
 
       const existingUser = await ctx.db.user.findUnique({
-        where: { email },
+        where: {email},
+        
       });
 
       if (name && country) {
