@@ -1,83 +1,83 @@
 generator client {
-    provider = "prisma-client-js"
-    output   = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    id                      String       @id @default(cuid())
-    email                   String       @unique
-    name                    String
-    country                 String
-    emailVerified           Boolean      @default(false)
-    verificationCode        String?
-    verificationCodeExpires DateTime?
-    createdAt               DateTime     @default(now())
-    updatedAt               DateTime     @updatedAt
-    restaurants             Restaurant[]
+  id                      String       @id @default(cuid())
+  email                   String       @unique
+  name                    String
+  country                 String
+  emailVerified           Boolean      @default(false)
+  verificationCode        String?
+  verificationCodeExpires DateTime?
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  restaurants             Restaurant[]
 
-    @@index([email])
+  @@index([email])
 }
 
 model Restaurant {
-    id         String     @id @default(cuid())
-    name       String
-    location   String
-    slug       String     @unique
-    ownerId    String
-    createdAt  DateTime   @default(now())
-    updatedAt  DateTime   @updatedAt
-    categories Category[]
-    dishes     Dish[]
-    owner      User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  id         String     @id @default(cuid())
+  name       String
+  location   String
+  slug       String     @unique
+  ownerId    String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  categories Category[]
+  dishes     Dish[]
+  owner      User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-    @@index([ownerId])
-    @@index([slug])
+  @@index([ownerId])
+  @@index([slug])
 }
 
 model Category {
-    id           String         @id @default(cuid())
-    name         String
-    restaurantId String
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
-    restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-    dishes       DishCategory[]
+  id           String         @id @default(cuid())
+  name         String
+  restaurantId String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  dishes       DishCategory[]
 
-    @@unique([restaurantId, name])
-    @@index([restaurantId])
+  @@unique([restaurantId, name])
+  @@index([restaurantId])
 }
 
 model Dish {
-    id           String         @id @default(cuid())
-    name         String
-    description  String
-    image        String?
-    spiceLevel   Int?
-    price        Float? 
-    isVeg        Boolean?
-    restaurantId String
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
-    restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-    categories   DishCategory[]
+  id           String         @id @default(cuid())
+  name         String
+  description  String
+  image        String?
+  spiceLevel   Int?
+  price        Float?
+  isVeg        Boolean?
+  restaurantId String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  restaurant   Restaurant     @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  categories   DishCategory[]
 
-    @@index([restaurantId])
+  @@index([restaurantId])
 }
 
 model DishCategory {
-    id         String   @id @default(cuid())
-    dishId     String
-    categoryId String
-    createdAt  DateTime @default(now())
-    category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-    dish       Dish     @relation(fields: [dishId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  dishId     String
+  categoryId String
+  createdAt  DateTime @default(now())
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  dish       Dish     @relation(fields: [dishId], references: [id], onDelete: Cascade)
 
-    @@unique([dishId, categoryId])
-    @@index([dishId])
-    @@index([categoryId])
+  @@unique([dishId, categoryId])
+  @@index([dishId])
+  @@index([categoryId])
 }
